@@ -12,14 +12,14 @@ return function(loveframes)
 ---------- module start ----------
 
 -- text object
-local newobject = loveframes.NewObject("text", "loveframes_object_text", true)
+local newobject = loveframes.newObject("text", "loveframes_object_text", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
 	- desc: initializes the object
 --]]---------------------------------------------------------
 function newobject:initialize()
-	
+
 	self.type = "text"
 	self.text = ""
 	self.font = loveframes.basicfont
@@ -41,13 +41,13 @@ function newobject:initialize()
 	self.internal = false
 	self.linksenabled = false
 	self.detectlinks = false
-	self.OnClickLink = nil
-	
-	local skin = loveframes.GetActiveSkin()
+	self.onClickLink = nil
+
+	local skin = loveframes.getActiveSkin()
 	if not skin then
 		skin = loveframes.config["DEFAULTSKIN"]
 	end
-	
+
 	local directives = skin.directives
 	if directives then
 		local text_default_color = directives.text_default_color
@@ -63,41 +63,41 @@ function newobject:initialize()
 			self.font = text_default_font
 		end
 	end
-	self:SetDrawFunc()
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
-	
+
 	if not visible then
 		if not alwaysupdate then
 			return
 		end
 	end
-	
+
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
-	
-	self:CheckHover()
-	
+	local update = self.update
+
+	self:checkHover()
+
 	local hover = self.hover
 	local linksenabled = self.linksenabled
 	local linkcol = false
-	
+
 	if hover and linksenabled and not loveframes.resizeobject then
 		local formattedtext = self.formattedtext
 		local x = self.x
@@ -112,7 +112,7 @@ function newobject:update(dt)
 				local text = v.text
 				local twidth = font:getWidth(text)
 				local theight = font:getHeight()
-				local col = loveframes.BoundingBox(x + linkx, mx, y + linky, my, twidth, 1, theight, 1)
+				local col = loveframes.boundingBox(x + linkx, mx, y + linky, my, twidth, 1, theight, 1)
 				v.hover = false
 				if col then
 					v.hover = true
@@ -122,17 +122,17 @@ function newobject:update(dt)
 		end
 		self.linkcol = linkcol
 	end
-	
+
 	-- move to parent if there is a parent
 	if parent ~= base then
 		self.x = self.parent.x + self.staticx
 		self.y = self.parent.y + self.staticy
 	end
-	
+
 	if update then
 		update(self, dt)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -143,22 +143,22 @@ function newobject:mousepressed(x, y, button)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local hover = self.hover
 	if hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 		local linksenabled = self.linksenabled
 		if linksenabled then
@@ -174,9 +174,9 @@ function newobject:mousepressed(x, y, button)
 					local text = v.text
 					local twidth = font:getWidth(text)
 					local theight = font:getHeight()
-					local col = loveframes.BoundingBox(objx + linkx, x, objy + linky, y, twidth, 1, theight, 1)
+					local col = loveframes.boundingBox(objx + linkx, x, objy + linky, y, twidth, 1, theight, 1)
 					if col then
-						local onclicklink = self.OnClickLink
+						local onclicklink = self.onClickLink
 						if onclicklink then
 							onclicklink(self, text)
 						end
@@ -185,15 +185,15 @@ function newobject:mousepressed(x, y, button)
 			end
 		end
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetText(text)
+	- func: setText(text)
 	- desc: sets the object's text
 --]]---------------------------------------------------------
-function newobject:SetText(t)
-	
+function newobject:setText(t)
+
 	local dtype = type(t)
 	local maxw = self.maxw
 	local font = self.font
@@ -205,10 +205,10 @@ function newobject:SetText(t)
 	local prevfont = font
 	local link = false
 	local tdata
-	
+
 	self.text = ""
 	self.formattedtext = {}
-	
+
 	if dtype == "string" then
 		tdata = {t}
 		self.original = {t}
@@ -221,7 +221,7 @@ function newobject:SetText(t)
 	else
 		return
 	end
-	
+
 	for k, v in ipairs(tdata) do
 		dtype = type(v)
 		if dtype == "table" then
@@ -244,11 +244,11 @@ function newobject:SetText(t)
 			end
 		elseif dtype == "number" then
 			table.insert(self.formattedtext, {
-				font = prevfont, 
-				color = prevcolor, 
-				linkcolor = prevlinkcolor, 
-				linkhovercolor = prevlinkhovercolor, 
-				link = link, 
+				font = prevfont,
+				color = prevcolor,
+				linkcolor = prevlinkcolor,
+				linkhovercolor = prevlinkhovercolor,
+				link = link,
 				text = tostring(v)
 			})
 		elseif dtype == "string" then
@@ -257,20 +257,20 @@ function newobject:SetText(t)
 			end
 			v = loveframes.utf8.gsub(v, string.char(9), "    ")
 			v = loveframes.utf8.gsub(v, "\n", " \n ")
-			local parts = loveframes.SplitString(v, " ")
+			local parts = loveframes.splitString(v, " ")
 			for i, j in ipairs(parts) do
 				table.insert(self.formattedtext, {
-					font = prevfont, 
-					color = prevcolor, 
-					linkcolor = prevlinkcolor, 
-					linkhovercolor = prevlinkhovercolor, 
-					link = link, 
+					font = prevfont,
+					color = prevcolor,
+					linkcolor = prevlinkcolor,
+					linkhovercolor = prevlinkhovercolor,
+					link = link,
 					text = j
 				})
 			end
 		end
 	end
-	
+
 	if maxw > 0 then
 		for k, v in ipairs(self.formattedtext) do
 			local data = v.text
@@ -280,18 +280,18 @@ function newobject:SetText(t)
 			local key = k
 			if width > maxw then
 				table.remove(self.formattedtext, k)
-				for n=1, loveframes.utf8.len(data) do	
+				for n=1, loveframes.utf8.len(data) do
 					local item = loveframes.utf8.sub(data, n, n)
 					local itemw = v.font:getWidth(item)
 					if n ~= loveframes.utf8.len(data) then
 						if (curw + itemw) > maxw then
 							table.insert(inserts, {
-								key = key, 
-								font = v.font, 
-								color = v.color, 
-								linkcolor = prevlinkcolor, 
-								linkhovercolor = v.linkhovercolor, 
-								link = v.link, 
+								key = key,
+								font = v.font,
+								color = v.color,
+								linkcolor = prevlinkcolor,
+								linkhovercolor = v.linkhovercolor,
+								link = v.link,
 								text = new
 							})
 							new = item
@@ -304,12 +304,12 @@ function newobject:SetText(t)
 					else
 						new = new .. item
 						table.insert(inserts, {
-							key = key, 
-							font = v.font, 
-							color = v.color, 
-							linkcolor = prevlinkcolor, 
-							linkhovercolor = v.linkhovercolor, 
-							link = v.link, 
+							key = key,
+							font = v.font,
+							color = v.color,
+							linkcolor = prevlinkcolor,
+							linkhovercolor = v.linkhovercolor,
+							link = v.link,
 							text = new
 						})
 					end
@@ -317,18 +317,18 @@ function newobject:SetText(t)
 			end
 		end
 	end
-	
+
 	for k, v in ipairs(inserts) do
 		table.insert(self.formattedtext, v.key, {
-			font = v.font, 
-			color = v.color, 
-			linkcolor = prevlinkcolor, 
-			linkhovercolor = v.linkhovercolor, 
-			link = v.link, 
+			font = v.font,
+			color = v.color,
+			linkcolor = prevlinkcolor,
+			linkhovercolor = v.linkhovercolor,
+			link = v.link,
 			text = v.text
 		})
 	end
-	
+
 	local textdata = self.formattedtext
 	local maxw = self.maxw
 	local font = self.font
@@ -348,7 +348,7 @@ function newobject:SetText(t)
 	local largestheight = 0
 	local initialwidth = 0
 	local detectlinks = self.detectlinks
-	
+
 	for k, v in ipairs(textdata) do
 		local text = v.text
 		local color = v.color
@@ -420,53 +420,53 @@ function newobject:SetText(t)
 			end
 		end
 	end
-	
+
 	self.lines = lines
-	
+
 	if lastwidth == 0 then
 		textwidth = totalwidth
 	end
-	
+
 	if textwidth < largestwidth then
 		textwidth = largestwidth
 	end
-	
+
 	if maxw > 0 then
 		self.width = maxw
 	else
 		self.width = textwidth
 	end
-	
+
 	self.height = drawy + prevlargestheight
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetText()
+	- func: getText()
 	- desc: gets the object's text
 --]]---------------------------------------------------------
-function newobject:GetText()
+function newobject:getText()
 
 	return self.text
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetFormattedText()
+	- func: getFormattedText()
 	- desc: gets the object's formatted text
 --]]---------------------------------------------------------
-function newobject:GetFormattedText()
+function newobject:getFormattedText()
 
 	return self.formattedtext
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: DrawText()
+	- func: drawText()
 	- desc: draws the object's text
 --]]---------------------------------------------------------
-function newobject:DrawText()
+function newobject:drawText()
 
 	local textdata = self.formattedtext
 	local x = self.x
@@ -475,11 +475,11 @@ function newobject:DrawText()
 	local shadowxoffset = self.shadowxoffset
 	local shadowyoffset = self.shadowyoffset
 	local shadowcolor = self.shadowcolor
-	local inlist, list = self:IsInList()
+	local inlist, list = self:isInList()
 	local printfunc = function(text, x, y)
 		love.graphics.print(text, math.floor(x + 0.5), math.floor(y + 0.5))
 	end
-	
+
 	for k, v in ipairs(textdata) do
 		local textx = v.x
 		local texty = v.y
@@ -532,270 +532,270 @@ function newobject:DrawText()
 			printfunc(text, x + textx, y + texty)
 		end
 	end
-	
+
 	return self
 end
 
 --[[---------------------------------------------------------
-	- func: SetMaxWidth(width)
+	- func: setMaxWidth(width)
 	- desc: sets the object's maximum width
 --]]---------------------------------------------------------
-function newobject:SetMaxWidth(width)
+function newobject:setMaxWidth(width)
 
 	local original = self.original
-	
+
 	self.maxw = width
-	self:SetText(original)
-	
+	self:setText(original)
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMaxWidth()
+	- func: getMaxWidth()
 	- desc: gets the object's maximum width
 --]]---------------------------------------------------------
-function newobject:GetMaxWidth()
+function newobject:getMaxWidth()
 
 	return self.maxw
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetWidth(width, relative)
+	- func: setWidth(width, relative)
 	- desc: sets the object's width
 --]]---------------------------------------------------------
-function newobject:SetWidth(width, relative)
+function newobject:setWidth(width, relative)
 
 	if relative then
-		self:SetMaxWidth(self.parent.width * width)
+		self:setMaxWidth(self.parent.width * width)
 	else
-		self:SetMaxWidth(width)
+		self:setMaxWidth(width)
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetHeight()
+	- func: setHeight()
 	- desc: sets the object's height
 --]]---------------------------------------------------------
-function newobject:SetHeight(height)
-	
+function newobject:setHeight(height)
+
 	return
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetSize(width, height, relative)
+	- func: setSize(width, height, relative)
 	- desc: sets the object's size
 --]]---------------------------------------------------------
-function newobject:SetSize(width, height, relative)
+function newobject:setSize(width, height, relative)
 
 	if relative then
-		self:SetMaxWidth(self.parent.width * width)
+		self:setMaxWidth(self.parent.width * width)
 	else
-		self:SetMaxWidth(width)
+		self:setMaxWidth(width)
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetFont(font)
+	- func: setFont(font)
 	- desc: sets the object's font
 	- note: font argument must be a font object
 --]]---------------------------------------------------------
-function newobject:SetFont(font)
+function newobject:setFont(font)
 
 	local original = self.original
-	
+
 	self.font = font
-	
+
 	if original then
-		self:SetText(original)
+		self:setText(original)
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetFont()
+	- func: getFont()
 	- desc: gets the object's font
 --]]---------------------------------------------------------
-function newobject:GetFont()
+function newobject:getFont()
 
 	return self.font
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetLines()
+	- func: getLines()
 	- desc: gets the number of lines the object's text uses
 --]]---------------------------------------------------------
-function newobject:GetLines()
+function newobject:getLines()
 
 	return self.lines
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetIgnoreNewlines(bool)
+	- func: setIgnoreNewlines(bool)
 	- desc: sets whether the object should ignore \n or not
 --]]---------------------------------------------------------
-function newobject:SetIgnoreNewlines(bool)
+function newobject:setIgnoreNewlines(bool)
 
 	self.ignorenewlines = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetIgnoreNewlines()
+	- func: getIgnoreNewlines()
 	- desc: gets whether the object should ignore \n or not
 --]]---------------------------------------------------------
-function newobject:GetIgnoreNewlines()
+function newobject:getIgnoreNewlines()
 
 	return self.ignorenewlines
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetShadow(bool)
+	- func: setShadow(bool)
 	- desc: sets whether or not the object should draw a
 			shadow behind its text
 --]]---------------------------------------------------------
-function newobject:SetShadow(bool)
+function newobject:setShadow(bool)
 
 	self.shadow = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetShadow()
+	- func: getShadow()
 	- desc: gets whether or not the object should draw a
 			shadow behind its text
 --]]---------------------------------------------------------
-function newobject:GetShadow()
+function newobject:getShadow()
 
 	return self.shadow
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetShadowOffsets(offsetx, offsety)
+	- func: setShadowOffsets(offsetx, offsety)
 	- desc: sets the object's x and y shadow offsets
 --]]---------------------------------------------------------
-function newobject:SetShadowOffsets(offsetx, offsety)
+function newobject:setShadowOffsets(offsetx, offsety)
 
 	self.shadowxoffset = offsetx
 	self.shadowyoffset = offsety
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetShadowOffsets()
+	- func: getShadowOffsets()
 	- desc: gets the object's x and y shadow offsets
 --]]---------------------------------------------------------
-function newobject:GetShadowOffsets()
+function newobject:getShadowOffsets()
 
 	return self.shadowxoffset, self.shadowyoffset
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetShadowColor(r, g, b, a)
+	- func: setShadowColor(r, g, b, a)
 	- desc: sets the object's shadow color
 --]]---------------------------------------------------------
-function newobject:SetShadowColor(r, g, b, a)
-	
+function newobject:setShadowColor(r, g, b, a)
+
 	self.shadowcolor = {r, g, b, a}
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetShadowColor()
+	- func: getShadowColor()
 	- desc: gets the object's shadow color
 --]]---------------------------------------------------------
-function newobject:GetShadowColor()
-	
+function newobject:getShadowColor()
+
 	return self.shadowcolor
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetDefaultColor(r, g, b, a)
+	- func: setDefaultColor(r, g, b, a)
 	- desc: sets the object's default text color
 --]]---------------------------------------------------------
-function newobject:SetDefaultColor(r, g, b, a)
+function newobject:setDefaultColor(r, g, b, a)
 
 	self.defaultcolor = {r, g, b, a}
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetDefaultColor()
+	- func: getDefaultColor()
 	- desc: gets whether or not the object should draw a
 			shadow behind its text
 --]]---------------------------------------------------------
-function newobject:GetDefaultColor()
+function newobject:getDefaultColor()
 
 	return self.defaultcolor
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetLinksEnabled(enabled)
+	- func: setLinksEnabled(enabled)
 	- desc: sets whether or not the object should process
 			urls into clickable links
 --]]---------------------------------------------------------
-function newobject:SetLinksEnabled(enabled)
+function newobject:setLinksEnabled(enabled)
 
 	self.linksenabled = enabled
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetLinksEnabled()
+	- func: getLinksEnabled()
 	- desc: gets whether or not the object should process
 			urls into clickable links
 --]]---------------------------------------------------------
-function newobject:GetLinksEnabled()
+function newobject:getLinksEnabled()
 
 	return self.linksenabled
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetDetectLinks(detect)
+	- func: setDetectLinks(detect)
 	- desc: sets whether or not the object should detect
 			links when processing new text
 --]]---------------------------------------------------------
-function newobject:SetDetectLinks(detect)
+function newobject:setDetectLinks(detect)
 
 	self.detectlinks = detect
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetDetectLinks()
+	- func: getDetectLinks()
 	- desc: gets whether or not the object should detect
 			links when processing new text
 --]]---------------------------------------------------------
-function newobject:GetDetectLinks()
+function newobject:getDetectLinks()
 
 	return self.detectlinks
-	
+
 end
 
 ---------- module end ----------

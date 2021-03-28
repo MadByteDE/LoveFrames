@@ -42,7 +42,7 @@ skin.controls.columnlistrow_body_hover_color        = {1, 0.68, 0.2, 1}
 skin.controls.menuoption_body_hover_color           = {1, 0.6, 0, 1}
 
 -- register the skin
-loveframes.RegisterSkin(skin)
+loveframes.registerSkin(skin)
 
 ---------- module end ----------
 end

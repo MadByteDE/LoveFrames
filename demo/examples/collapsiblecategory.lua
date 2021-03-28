@@ -4,24 +4,24 @@ example.category = "Object Demonstrations"
 
 function example.func(loveframes, centerarea)
 	
-	local frame = loveframes.Create("frame")
-	frame:SetName("Collapsible Category")
-	frame:SetSize(500, 300)
-	frame:CenterWithinArea(unpack(centerarea))
+	local frame = loveframes.create("frame")
+	frame:setName("Collapsible Category")
+	frame:setSize(500, 300)
+	frame:centerWithinArea(unpack(centerarea))
 		
-	local panel = loveframes.Create("panel")
-	panel:SetHeight(230)
+	local panel = loveframes.create("panel")
+	panel:setHeight(230)
 	
-	local text = loveframes.Create("text", panel)
-	text:SetText("Collapsible Category")
+	local text = loveframes.create("text", panel)
+	text:setText("Collapsible Category")
 	
-	local collapsiblecategory = loveframes.Create("collapsiblecategory", frame)
-	collapsiblecategory:SetPos(5, 30)
-	collapsiblecategory:SetSize(490, 265)
-	collapsiblecategory:SetText("Category 1")
-	collapsiblecategory:SetObject(panel)
+	local collapsiblecategory = loveframes.create("collapsiblecategory", frame)
+	collapsiblecategory:setPosition(5, 30)
+	collapsiblecategory:setSize(490, 265)
+	collapsiblecategory:setText("Category 1")
+	collapsiblecategory:setObject(panel)
 	
-	text:Center()
+	text:center()
 	
 end
 

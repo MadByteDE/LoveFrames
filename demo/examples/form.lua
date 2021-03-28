@@ -4,21 +4,21 @@ example.category = "Object Demonstrations"
 
 function example.func(loveframes, centerarea)
 	
-	local frame = loveframes.Create("frame")
-	frame:SetName("Form")
-	frame:SetSize(500, 80)
-	frame:CenterWithinArea(unpack(centerarea))
+	local frame = loveframes.create("frame")
+	frame:setName("Form")
+	frame:setSize(500, 80)
+	frame:centerWithinArea(unpack(centerarea))
 		
-	local form = loveframes.Create("form", frame)
-	form:SetPos(5, 25)
-	form:SetSize(490, 65)
-	form:SetLayoutType("horizontal")
+	local form = loveframes.create("form", frame)
+	form:setPosition(5, 25)
+	form:setSize(490, 65)
+	form:setLayoutType("horizontal")
 	
 	for i=1, 3 do
-		local button = loveframes.Create("button")
-		button:SetText(i)
-		button:SetWidth((490/3) - 7)
-		form:AddItem(button)
+		local button = loveframes.create("button")
+		button:setText(i)
+		button:setWidth((490/3) - 7)
+		form:addItem(button)
 	end
 	
 end

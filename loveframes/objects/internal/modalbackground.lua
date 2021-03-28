@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- modalbackground class
-local newobject = loveframes.NewObject("modalbackground", "loveframes_object_modalbackground", true)
+local newobject = loveframes.newObject("modalbackground", "loveframes_object_modalbackground", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -27,19 +27,19 @@ function newobject:initialize(object)
 	table.insert(loveframes.base.children, self)
 	
 	if self.object.type ~= "frame" then
-		self:Remove()
+		self:remove()
 	end
 	
 	-- apply template properties to the object
-	loveframes.ApplyTemplatesToObject(self)
-	self:SetDrawFunc()
+	loveframes.applyTemplatesToObject(self)
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the element
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 	
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
@@ -51,21 +51,21 @@ function newobject:update(dt)
 	end
 	
 	local object = self.object
-	local update = self.Update
+	local update = self.update
 	local base = loveframes.base
 	local basechildren = base.children
 	
-	self:CheckHover()
+	self:checkHover()
 	
 	if #basechildren > 1 then
 		if basechildren[#basechildren - 1] ~= self then
-			self:Remove()
+			self:remove()
 			table.insert(basechildren, self)
 		end
 	end
 	
-	if not object:IsActive() then
-		self:Remove()
+	if not object:isActive() then
+		self:remove()
 		loveframes.modalobject = false
 	end
 	

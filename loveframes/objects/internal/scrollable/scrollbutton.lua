@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- scrollbutton clas
-local newobject = loveframes.NewObject("scrollbutton", "loveframes_object_scrollbutton", true)
+local newobject = loveframes.newObject("scrollbutton", "loveframes_object_scrollbutton", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -21,18 +21,18 @@ function newobject:initialize(scrolltype)
 	self.height = 16
 	self.down = false
 	self.internal = true
-	self.OnClick = function() end
+	self.onClick = function() end
 	
 	-- apply template properties to the object
-	loveframes.ApplyTemplatesToObject(self)
-	self:SetDrawFunc()
+	loveframes.applyTemplatesToObject(self)
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 	
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
@@ -43,12 +43,12 @@ function newobject:update(dt)
 		end
 	end
 	
-	self:CheckHover()
+	self:checkHover()
 	
 	local hover = self.hover
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
+	local update = self.update
 	
 	if not hover then
 		self.down = false
@@ -89,9 +89,9 @@ function newobject:mousepressed(x, y, button)
 	local hover = self.hover
 	
 	if hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 		self.down = true
 		loveframes.downobject = self
@@ -113,7 +113,7 @@ function newobject:mousereleased(x, y, button)
 	
 	local hover = self.hover
 	local down = self.down
-	local onclick = self.OnClick
+	local onclick = self.onClick
 	
 	if hover and down then
 		if button == 1 then
@@ -126,10 +126,10 @@ function newobject:mousereleased(x, y, button)
 end
 
 --[[---------------------------------------------------------
-	- func: GetScrollType()
+	- func: getScrollType()
 	- desc: gets the object's scroll type
 --]]---------------------------------------------------------
-function newobject:GetScrollType()
+function newobject:getScrollType()
 
 	return self.scrolltype
 	

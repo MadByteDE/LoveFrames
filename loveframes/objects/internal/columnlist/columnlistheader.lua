@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- columnlistheader class
-local newobject = loveframes.NewObject("columnlistheader", "loveframes_object_columnlistheader", true)
+local newobject = loveframes.newObject("columnlistheader", "loveframes_object_columnlistheader", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -40,7 +40,7 @@ function newobject:initialize(name, parent)
 		end
 	end
 	
-	self.OnClick = function(object)
+	self.onClick = function(object)
 		local descending = object.descending
 		local parent = object.parent
 		local pinternals = parent.internals
@@ -50,19 +50,19 @@ function newobject:initialize(name, parent)
 		else
 			object.descending = true
 		end
-		list:Sort(key, object.descending)
+		list:sort(key, object.descending)
 	end
 	
 	-- apply template properties to the object
-	loveframes.ApplyTemplatesToObject(self)
-	self:SetDrawFunc()
+	loveframes.applyTemplatesToObject(self)
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 	
 	if not self.visible then
 		if not self.alwaysupdate then
@@ -70,17 +70,17 @@ function newobject:update(dt)
 		end
 	end
 	
-	local update = self.Update
+	local update = self.update
 	local parent = self.parent
 	local list = parent.internals[1]
-	local vbody = list:GetVerticalScrollBody()
+	local vbody = list:getVerticalScrollBody()
 	local width = list.width
 	if vbody then
 		width = width - vbody.width
 	end
 	
 	self.clickbounds = {x = list.x, y = list.y, width = width, height = list.height}
-	self:CheckHover()
+	self:checkHover()
 	
 	if not self.hover then
 		self.down = false
@@ -106,8 +106,8 @@ function newobject:update(dt)
 			self.width = 20
 		end
 		parent.startadjustment = true
-		parent.internals[1]:CalculateSize()
-		parent.internals[1]:RedoLayout()
+		parent.internals[1]:calculateSize()
+		parent.internals[1]:redoLayout()
 	elseif resizecolumn and parent.startadjustment then
 		local header = parent.children[self.columnid - 1]
 		self.staticx = header.staticx + header.width
@@ -129,7 +129,7 @@ function newobject:mousepressed(x, y, button)
 	
 	if not self.parent.resizecolumn and self.parent.canresizecolumns then
 		local box = self.resizebox
-		local col = loveframes.BoundingBox(x, box.x, y, box.y, 1, box.width, 1, box.height)
+		local col = loveframes.boundingBox(x, box.x, y, box.y, 1, box.width, 1, box.height)
 		if col then
 			self.resizing = true
 			self.parent.resizecolumn = self
@@ -137,9 +137,9 @@ function newobject:mousepressed(x, y, button)
 	end
 	
 	if self.hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" and button == 1 then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 		self.down = true
 		loveframes.downobject = self
@@ -161,7 +161,7 @@ function newobject:mousereleased(x, y, button)
 	local down = self.down
 	local clickable = self.clickable
 	local enabled = self.enabled
-	local onclick = self.OnClick
+	local onclick = self.onClick
 	
 	if hover and down and clickable and button == 1 then
 		if enabled then
@@ -179,10 +179,10 @@ function newobject:mousereleased(x, y, button)
 end
 
 --[[---------------------------------------------------------
-	- func: SetName(name)
+	- func: setName(name)
 	- desc: sets the object's name
 --]]---------------------------------------------------------
-function newobject:SetName(name)
+function newobject:setName(name)
 
 	self.name = name
 	return self
@@ -190,10 +190,10 @@ function newobject:SetName(name)
 end
 
 --[[---------------------------------------------------------
-	- func: GetName()
+	- func: getName()
 	- desc: gets the object's name
 --]]---------------------------------------------------------
-function newobject:GetName()
+function newobject:getName()
 
 	return self.name
 	

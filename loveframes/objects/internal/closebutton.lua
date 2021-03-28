@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- closebutton class
-local newobject = loveframes.NewObject("closebutton", "loveframes_object_closebutton", true)
+local newobject = loveframes.newObject("closebutton", "loveframes_object_closebutton", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -22,38 +22,38 @@ function newobject:initialize()
 	self.hover = false
 	self.down = false
 	self.autoposition = true
-	self.OnClick = function() end
-	
+	self.onClick = function() end
+
 	-- apply template properties to the object
-	loveframes.ApplyTemplatesToObject(self)
-	
-	self:SetDrawFunc()
+	loveframes.applyTemplatesToObject(self)
+
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
-	
+function newobject:_update(dt)
+
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
-	
+
 	if not visible then
 		if not alwaysupdate then
 			return
 		end
 	end
-	
-	self:CheckHover()
-	
+
+	self:checkHover()
+
 	local hover = self.hover
 	local down = self.down
 	local downobject = loveframes.downobject
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
-	
+	local update = self.update
+
 	if not hover then
 		self.down = false
 	else
@@ -61,22 +61,22 @@ function newobject:update(dt)
 			self.down = true
 		end
 	end
-	
+
 	if not down and downobject == self then
 		self.hover = true
 	end
-	
+
 	if self.autoposition then
 		self.staticx = self.parent.width - self.width - 4
 		self.staticy = 4
 	end
-	
+
 	-- move to parent if there is a parent
 	if parent ~= base then
 		self.x = parent.x + self.staticx
 		self.y = parent.y + self.staticy
 	end
-	
+
 	if update then
 		update(self, dt)
 	end
@@ -88,24 +88,24 @@ end
 	- desc: called when the player presses a mouse button
 --]]---------------------------------------------------------
 function newobject:mousepressed(x, y, button)
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local hover = self.hover
-	
+
 	if hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 		self.down = true
 		loveframes.downobject = self
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -113,46 +113,46 @@ end
 	- desc: called when the player releases a mouse button
 --]]---------------------------------------------------------
 function newobject:mousereleased(x, y, button)
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local hover = self.hover
-	local onclick = self.OnClick
-	
+	local onclick = self.onClick
+
 	if hover and self.down then
 		if button == 1 then
 			onclick(x, y, self)
 		end
 	end
-	
+
 	self.down = false
 
 end
 
 --[[---------------------------------------------------------
-	- func: SetAutoPosition(bool)
-	- desc: sets whether or not the object should be 
+	- func: setAutoPosition(bool)
+	- desc: sets whether or not the object should be
 			positioned automatically
 --]]---------------------------------------------------------
-function newobject:SetAutoPosition(bool)
+function newobject:setAutoPosition(bool)
 
 	self.autoposition = bool
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetAutoPosition()
-	- desc: gets whether or not the object should be 
+	- func: getAutoPosition()
+	- desc: gets whether or not the object should be
 			positioned automatically
 --]]---------------------------------------------------------
-function newobject:GetAutoPosition()
+function newobject:getAutoPosition()
 
 	return self.autoposition
-	
+
 end
 
 ---------- module end ----------

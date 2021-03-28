@@ -10,53 +10,53 @@ return function(loveframes)
 loveframes.skins = {}
 
 --[[---------------------------------------------------------
-	- func: RegisterSkin(skin)
+	- func: registerSkin(skin)
 	- desc: registers a skin
 --]]---------------------------------------------------------
-function loveframes.RegisterSkin(skin)
+function loveframes.registerSkin(skin)
 	local skins = loveframes.skins
 	local name = skin.name
 	local author = skin.author
 	local version = skin.version
 	local basename = skin.base
 	local newskin = false
-	
+
 	if name == "" or not name then
-		loveframes.Error("Skin registration error: Invalid or missing name data.")
+		loveframes.error("Skin registration error: Invalid or missing name data.")
 	end
-	
+
 	if author == "" or not author then
-		loveframes.Error("Skin registration error: Invalid or missing author data.")
+		loveframes.error("Skin registration error: Invalid or missing author data.")
 	end
-	
+
 	if version == "" or not version then
-		loveframes.Error("Skin registration error: Invalid or missing version data.")
+		loveframes.error("Skin registration error: Invalid or missing version data.")
 	end
-	
+
 	local namecheck = skins[name]
 	if namecheck then
-		loveframes.Error("Skin registration error: A skin with the name '" ..name.. "' already exists.")
+		loveframes.error("Skin registration error: A skin with the name '" ..name.. "' already exists.")
 	end
-	
+
 	local dir = skin.directory or loveframes.config["DIRECTORY"] .. "/skins/" ..name
 	local dircheck = love.filesystem.getInfo(dir) ~= nil and love.filesystem.getInfo(dir)["type"] == "directory"
 	if not dircheck then
-		loveframes.Error("Skin registration error: Could not find a directory for skin '" ..name.. "'.")
+		loveframes.error("Skin registration error: Could not find a directory for skin '" ..name.. "'.")
 	end
-	
+
 	local imagedir = skin.imagedir or dir .. "/images"
 	local imagedircheck = love.filesystem.getInfo(imagedir) ~= nil and love.filesystem.getInfo(imagedir)["type"] == "directory"
 	if not imagedircheck then
-		loveframes.Error("Skin registration error: Could not find an image directory for skin '" ..name.. "'.")
+		loveframes.error("Skin registration error: Could not find an image directory for skin '" ..name.. "'.")
 	end
-	
+
 	if basename then
 		--local basename = base
 		local base = skins[basename]
 		if not base then
-			loveframes.Error("Could not find base skin '" ..basename.. "' for skin '" ..name.. "'.")
+			loveframes.error("Could not find base skin '" ..basename.. "' for skin '" ..name.. "'.")
 		end
-		newskin = loveframes.DeepCopy(base)
+		newskin = loveframes.deepCopy(base)
 		newskin.name = name
 		newskin.author = author
 		newskin.version = version
@@ -74,17 +74,17 @@ function loveframes.RegisterSkin(skin)
 			end
 		end
 	end
-	
+
 	if not newskin then
 		newskin = skin
 	end
-	
+
 	newskin.dir = dir
 	local images = {}
-	
+
 	local indeximages = loveframes.config["INDEXSKINIMAGES"]
 	if indeximages then
-		local imagelist = loveframes.GetDirectoryContents(imagedir)
+		local imagelist = loveframes.getDirectoryContents(imagedir)
 		local filename, extension, image
 		for k, v in ipairs(imagelist) do
 			extension = v.extension
@@ -100,14 +100,14 @@ function loveframes.RegisterSkin(skin)
 	skins[name] = newskin
 end
 
-function loveframes.LoadSkins(dir)
-	local skinlist = loveframes.GetDirectoryContents(dir)
+function loveframes.loadSkins(dir)
+	local skinlist = loveframes.getDirectoryContents(dir)
 	-- loop through a list of all gui skins and require them
 	local skin
 	for k, v in ipairs(skinlist) do
 		if v.extension == "lua" then
 			skin = loveframes.require(v.requirepath)
-			--loveframes.RegisterSkin(skin)
+			--loveframes.registerSkin(skin)
 		end
 	end
 end

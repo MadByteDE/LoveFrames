@@ -7,14 +7,14 @@ return function(loveframes)
 ---------- module start ----------
 
 -- numberbox object
-local newobject = loveframes.NewObject("numberbox", "loveframes_object_numberbox", true)
+local newobject = loveframes.newObject("numberbox", "loveframes_object_numberbox", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
 	- desc: initializes the object
 --]]---------------------------------------------------------
 function newobject:initialize()
-	
+
 	self.type = "numberbox"
 	self.width = 80
 	self.height = 20
@@ -29,157 +29,157 @@ function newobject:initialize()
 	self.canmodify = false
 	self.lastbuttonclicked = false
 	self.internals = {}
-	self.OnValueChanged = nil
-	
+	self.onValueChanged = nil
+
 	local input = loveframes.objects["textinput"]:new()
 	input.parent = self
-	input:SetSize(50, 20)
-	input:SetUsable({"1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", "-"})
-	input:SetTabReplacement("")
-	input:SetText(self.value)
-	input.OnTextChanged = function(object)
+	input:setSize(50, 20)
+	input:setUsable({"1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", "-"})
+	input:setTabReplacement("")
+	input:setText(self.value)
+	input.onTextChanged = function(object)
 		local value = self.value
 		local newvalue = tonumber(object.lines[1])
 		if not newvalue then
 			self.value = value
-			input:SetText(value)
+			input:setText(value)
 			return
 		end
 		self.value = newvalue
 		if self.value > self.max then
 			self.value = self.max
-			object:SetText(self.value)
+			object:setText(self.value)
 		end
 		if self.value < self.min then
 			self.value = self.min
-			object:SetText(self.value)
+			object:setText(self.value)
 		end
 		if value ~= self.value then
-			if self.OnValueChanged then
-				self.OnValueChanged(self, self.value)
+			if self.onValueChanged then
+				self.onValueChanged(self, self.value)
 			end
 		end
 	end
-	input.Update = function(object)
-		object:SetSize(object.parent.width - 20, object.parent.height)
+	input.update = function(object)
+		object:setSize(object.parent.width - 20, object.parent.height)
 	end
-	
+
 	local increasebutton = loveframes.objects["button"]:new()
 	increasebutton.parent = self
-	increasebutton:SetWidth(21)
-	increasebutton:SetText("+")
-	increasebutton.OnClick = function()
+	increasebutton:setWidth(21)
+	increasebutton:setText("+")
+	increasebutton.onClick = function()
 		local canmodify = self.canmodify
 		if not canmodify then
-			self:ModifyValue("add")
+			self:modifyValue("add")
 		else
 			self.canmodify = false
 		end
 	end
-	increasebutton.Update = function(object)
+	increasebutton.update = function(object)
 		local time = 0
 		time = love.timer.getTime()
 		local delay = self.delay
 		local down = object.down
 		local canmodify = self.canmodify
 		local lastbuttonclicked = self.lastbuttonclicked
-		object:SetPos(object.parent.width - 21, 0)
-		object:SetHeight(object.parent.height/2 + 1)
+		object:setPosition(object.parent.width - 21, 0)
+		object:setHeight(object.parent.height/2 + 1)
 		if down and not canmodify then
-			self:ModifyValue("add")
+			self:modifyValue("add")
 			self.canmodify = true
 			self.delay = time + 0.80
 			self.lastbuttonclicked = object
 		elseif down and canmodify and delay < time then
-			self:ModifyValue("add")
+			self:modifyValue("add")
 			self.delay = time + 0.02
 		elseif not down and canmodify and lastbuttonclicked == object then
 			self.canmodify = false
 			self.delay = time + 0.80
 		end
 	end
-	
+
 	local decreasesbutton = loveframes.objects["button"]:new()
 	decreasesbutton.parent = self
-	decreasesbutton:SetWidth(21)
-	decreasesbutton:SetText("-")
-	decreasesbutton.OnClick = function()
+	decreasesbutton:setWidth(21)
+	decreasesbutton:setText("-")
+	decreasesbutton.onClick = function()
 		local canmodify = self.canmodify
 		if not canmodify then
-			self:ModifyValue("subtract")
+			self:modifyValue("subtract")
 		else
 			self.canmodify = false
 		end
 	end
-	decreasesbutton.Update = function(object)
+	decreasesbutton.update = function(object)
 		local time = 0
 		time = love.timer.getTime()
 		local delay = self.delay
 		local down = object.down
 		local canmodify = self.canmodify
 		local lastbuttonclicked = self.lastbuttonclicked
-		object:SetPos(object.parent.width - 21, object.parent.height/2)
-		object:SetHeight(object.parent.height/2)
+		object:setPosition(object.parent.width - 21, object.parent.height/2)
+		object:setHeight(object.parent.height/2)
 		if down and not canmodify then
-			self:ModifyValue("subtract")
+			self:modifyValue("subtract")
 			self.canmodify = true
 			self.delay = time + 0.80
 			self.lastbuttonclicked = object
 		elseif down and canmodify and delay < time then
-			self:ModifyValue("subtract")
+			self:modifyValue("subtract")
 			self.delay = time + 0.02
 		elseif not down and canmodify and lastbuttonclicked == object then
 			self.canmodify = false
 			self.delay = time + 0.80
 		end
 	end
-	
+
 	table.insert(self.internals, input)
 	table.insert(self.internals, increasebutton)
 	table.insert(self.internals, decreasesbutton)
-	
-	self:SetDrawFunc()
+
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the element
 --]]---------------------------------------------------------
-function newobject:update(dt)
-	
+function newobject:_update(dt)
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
-	
+
 	if not visible then
 		if not alwaysupdate then
 			return
 		end
 	end
-	
+
 	local internals = self.internals
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
-	
+	local update = self.update
+
 	-- move to parent if there is a parent
 	if parent ~= base and parent.type ~= "list" then
 		self.x = self.parent.x + self.staticx
 		self.y = self.parent.y + self.staticy
 	end
-	
-	self:CheckHover()
-	
+
+	self:checkHover()
+
 	for k, v in ipairs(internals) do
-		v:update(dt)
+		v:_update(dt)
 	end
-	
+
 	if update then
 		update(self, dt)
 	end
@@ -194,236 +194,236 @@ function newobject:mousepressed(x, y, button)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local internals = self.internals
 	local hover = self.hover
-	
+
 	if hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 	end
-	
+
 	for k, v in ipairs(internals) do
 		v:mousepressed(x, y, button)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetValue(value)
+	- func: setValue(value)
 	- desc: sets the object's value
 --]]---------------------------------------------------------
-function newobject:SetValue(value)
+function newobject:setValue(value)
 
 	local min = self.min
 	local curvalue = self.value
 	local value = tonumber(value) or min
 	local internals = self.internals
 	local input = internals[1]
-	local onvaluechanged = self.OnValueChanged
-	
+	local onvaluechanged = self.onValueChanged
+
 	self.value = value
-	input:SetText(value)
-	
+	input:setText(value)
+
 	if value ~= curvalue and onvaluechanged then
 		onvaluechanged(self, value)
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetValue()
+	- func: getValue()
 	- desc: gets the object's value
 --]]---------------------------------------------------------
-function newobject:GetValue()
+function newobject:getValue()
 
 	return self.value
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetIncreaseAmount(amount)
+	- func: setIncreaseAmount(amount)
 	- desc: sets the object's increase amount
 --]]---------------------------------------------------------
-function newobject:SetIncreaseAmount(amount)
+function newobject:setIncreaseAmount(amount)
 
 	self.increaseamount = amount
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetIncreaseAmount()
+	- func: getIncreaseAmount()
 	- desc: gets the object's increase amount
 --]]---------------------------------------------------------
-function newobject:GetIncreaseAmount()
+function newobject:getIncreaseAmount()
 
 	return self.increaseamount
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetDecreaseAmount(amount)
+	- func: setDecreaseAmount(amount)
 	- desc: sets the object's decrease amount
 --]]---------------------------------------------------------
-function newobject:SetDecreaseAmount(amount)
+function newobject:setDecreaseAmount(amount)
 
 	self.decreaseamount = amount
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetDecreaseAmount()
+	- func: getDecreaseAmount()
 	- desc: gets the object's decrease amount
 --]]---------------------------------------------------------
-function newobject:GetDecreaseAmount()
+function newobject:getDecreaseAmount()
 
 	return self.decreaseamount
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMax(max)
+	- func: setMax(max)
 	- desc: sets the object's maximum value
 --]]---------------------------------------------------------
-function newobject:SetMax(max)
+function newobject:setMax(max)
 
 	local internals = self.internals
 	local input = internals[1]
-	local onvaluechanged = self.OnValueChanged
-	
+	local onvaluechanged = self.onValueChanged
+
 	self.max = max
-	
+
 	if self.value > max then
 		self.value = max
-		input:SetValue(max)
+		input:setValue(max)
 		if onvaluechanged then
 			onvaluechanged(self, max)
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMax()
+	- func: getMax()
 	- desc: gets the object's maximum value
 --]]---------------------------------------------------------
-function newobject:GetMax()
+function newobject:getMax()
 
 	return self.max
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMin(min)
+	- func: setMin(min)
 	- desc: sets the object's minimum value
 --]]---------------------------------------------------------
-function newobject:SetMin(min)
+function newobject:setMin(min)
 
 	local internals = self.internals
 	local input = internals[1]
-	local onvaluechanged = self.OnValueChanged
-	
+	local onvaluechanged = self.onValueChanged
+
 	self.min = min
-	
+
 	if self.value < min then
 		self.value = min
-		input:SetValue(min)
+		input:setValue(min)
 		if onvaluechanged then
 			onvaluechanged(self, min)
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMin()
+	- func: getMin()
 	- desc: gets the object's minimum value
 --]]---------------------------------------------------------
-function newobject:GetMin()
+function newobject:getMin()
 
 	return self.min
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMinMax()
+	- func: setMinMax()
 	- desc: sets the object's minimum and maximum values
 --]]---------------------------------------------------------
-function newobject:SetMinMax(min, max)
+function newobject:setMinMax(min, max)
 
 	local internals = self.internals
 	local input = internals[1]
-	local onvaluechanged = self.OnValueChanged
-	
+	local onvaluechanged = self.onValueChanged
+
 	self.min = min
 	self.max = max
-	
+
 	if self.value > max then
 		self.value = max
-		input:SetValue(max)
+		input:setValue(max)
 		if onvaluechanged then
 			onvaluechanged(self, max)
 		end
 	end
-	
+
 	if self.value < min then
 		self.value = min
-		input:SetValue(min)
+		input:setValue(min)
 		if onvaluechanged then
 			onvaluechanged(self, min)
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMinMax()
+	- func: getMinMax()
 	- desc: gets the object's minimum and maximum values
 --]]---------------------------------------------------------
-function newobject:GetMinMax()
+function newobject:getMinMax()
 
 	return self.min, self.max
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: ModifyValue(type)
+	- func: modifyValue(type)
 	- desc: modifies the object's value
 --]]---------------------------------------------------------
-function newobject:ModifyValue(type)
+function newobject:modifyValue(type)
 
 	local value = self.value
 	local internals = self.internals
 	local input = internals[1]
 	local decimals = self.decimals
-	local onvaluechanged = self.OnValueChanged
-	
+	local onvaluechanged = self.onValueChanged
+
 	if not value then
 		return
 	end
-	
+
 	if type == "add" then
 		local increaseamount = self.increaseamount
 		local max = self.max
@@ -431,8 +431,8 @@ function newobject:ModifyValue(type)
 		if self.value > max then
 			self.value = max
 		end
-		self.value = loveframes.Round(self.value, decimals)
-		input:SetText(self.value)
+		self.value = loveframes.round(self.value, decimals)
+		input:setText(self.value)
 		if value ~= self.value then
 			if onvaluechanged then
 				onvaluechanged(self, self.value)
@@ -445,40 +445,40 @@ function newobject:ModifyValue(type)
 		if self.value < min then
 			self.value = min
 		end
-		self.value = loveframes.Round(self.value, decimals)
-		input:SetText(self.value)
+		self.value = loveframes.round(self.value, decimals)
+		input:setText(self.value)
 		if value ~= self.value then
 			if onvaluechanged then
 				onvaluechanged(self, self.value)
 			end
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetDecimals(decimals)
-	- desc: sets how many decimals the object's value 
+	- func: setDecimals(decimals)
+	- desc: sets how many decimals the object's value
 			can have
 --]]---------------------------------------------------------
-function newobject:SetDecimals(decimals)
+function newobject:setDecimals(decimals)
 
 	self.decimals = decimals
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetDecimals()
-	- desc: gets how many decimals the object's value 
+	- func: getDecimals()
+	- desc: gets how many decimals the object's value
 			can have
 --]]---------------------------------------------------------
-function newobject:GetDecimals()
+function newobject:getDecimals()
 
 	return self.decimals
-	
+
 end
 
 ---------- module end ----------

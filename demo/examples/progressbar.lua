@@ -4,57 +4,57 @@ example.category = "Object Demonstrations"
 
 function example.func(loveframes, centerarea)
 	
-	local frame = loveframes.Create("frame")
-	frame:SetName("Progress Bar")
-	frame:SetSize(500, 160)
-	frame:CenterWithinArea(unpack(centerarea))
+	local frame = loveframes.create("frame")
+	frame:setName("Progress Bar")
+	frame:setSize(500, 160)
+	frame:centerWithinArea(unpack(centerarea))
 		
-	local progressbar = loveframes.Create("progressbar", frame)
-	progressbar:SetPos(5, 30)
-	progressbar:SetWidth(490)
-	progressbar:SetLerpRate(10)
+	local progressbar = loveframes.create("progressbar", frame)
+	progressbar:setPosition(5, 30)
+	progressbar:setWidth(490)
+	progressbar:setLerpRate(10)
 		
-	local button1 = loveframes.Create("button", frame)
-	button1:SetPos(5, 60)
-	button1:SetWidth(490)
-	button1:SetText("Change bar value")
-	button1.OnClick = function(object2, x, y)
-		progressbar:SetValue(math.random(progressbar:GetMin(), progressbar:GetMax()))
+	local button1 = loveframes.create("button", frame)
+	button1:setPosition(5, 60)
+	button1:setWidth(490)
+	button1:setText("Change bar value")
+	button1.onClick = function(object2, x, y)
+		progressbar:setValue(math.random(progressbar:getMin(), progressbar:getMax()))
 	end
 		
-	local button2 = loveframes.Create("button", frame)
-	button2:SetPos(5, 90)
-	button2:SetWidth(490)
-	button2:SetText("Toggle bar lerp")
-	button2.OnClick = function(object2, x, y)
-		if progressbar:GetLerp() == true then
-			progressbar:SetLerp(false)
+	local button2 = loveframes.create("button", frame)
+	button2:setPosition(5, 90)
+	button2:setWidth(490)
+	button2:setText("Toggle bar lerp")
+	button2.onClick = function(object2, x, y)
+		if progressbar:getLerp() == true then
+			progressbar:setLerp(false)
 		else
-			progressbar:SetLerp(true)
+			progressbar:setLerp(true)
 		end
 	end
 		
-	local slider = loveframes.Create("slider", frame)
-	slider:SetPos(5, 135)
-	slider:SetWidth(490)
-	slider:SetText("Progressbar lerp rate")
-	slider:SetMinMax(0, 50)
-	slider:SetDecimals(0)
-	slider:SetValue(10)
-	slider.OnValueChanged = function(object2, value)
-		progressbar:SetLerpRate(value)
+	local slider = loveframes.create("slider", frame)
+	slider:setPosition(5, 135)
+	slider:setWidth(490)
+	slider:setText("Progressbar lerp rate")
+	slider:setMinMax(0, 50)
+	slider:setDecimals(0)
+	slider:setValue(10)
+	slider.onValueChanged = function(object2, value)
+		progressbar:setLerpRate(value)
 	end
 		
-	local text1 = loveframes.Create("text", frame)
-	text1:SetPos(5, 120)
-	text1:SetText("Lerp Rate")
-	text1:SetFont(love.graphics.newFont(10))
+	local text1 = loveframes.create("text", frame)
+	text1:setPosition(5, 120)
+	text1:setText("Lerp Rate")
+	text1:setFont(love.graphics.newFont(10))
 		
-	local text2 = loveframes.Create("text", frame)
-	text2:SetFont(love.graphics.newFont(10))
-	text2.Update = function(object, dt)
-		object:SetPos(slider:GetWidth() - object:GetWidth(), 120)
-		object:SetText(slider:GetValue())
+	local text2 = loveframes.create("text", frame)
+	text2:setFont(love.graphics.newFont(10))
+	text2.update = function(object, dt)
+		object:setPosition(slider:getWidth() - object:getWidth(), 120)
+		object:setText(slider:getValue())
 	end
 	
 end

@@ -10,54 +10,54 @@ return function(loveframes)
 --local util = {}
 
 --[[---------------------------------------------------------
-	- func: SetState(name)
+	- func: setState(name)
 	- desc: sets the current state
 --]]---------------------------------------------------------
-function loveframes.SetState(name)
+function loveframes.setState(name)
 
 	loveframes.state = name
 	loveframes.base.state = name
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetState()
+	- func: getState()
 	- desc: gets the current state
 --]]---------------------------------------------------------
-function loveframes.GetState()
+function loveframes.getState()
 
 	return loveframes.state
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetActiveSkin(name)
+	- func: setActiveSkin(name)
 	- desc: sets the active skin
 --]]---------------------------------------------------------
-function loveframes.SetActiveSkin(name)
+function loveframes.setActiveSkin(name)
 	local skin = name and loveframes.skins[name]
-	if not skin then print("SetActiveSkin: no such skin") return end
-	
+	if not skin then print("setActiveSkin: no such skin") return end
+
 	loveframes.config["ACTIVESKIN"] = name
 	local object = loveframes.base
-	object:SetSkin(name)
+	object:setSkin(name)
 end
 
 --[[---------------------------------------------------------
-	- func: GetActiveSkin()
+	- func: getActiveSkin()
 	- desc: gets the active skin
 --]]---------------------------------------------------------
-function loveframes.GetActiveSkin()
+function loveframes.getActiveSkin()
 	local index = loveframes.config["ACTIVESKIN"]
 	return loveframes.skins[index]
 end
 
 --[[---------------------------------------------------------
-	- func: BoundingBox(x1, x2, y1, y2, w1, w2, h1, h2)
+	- func: boundingBox(x1, x2, y1, y2, w1, w2, h1, h2)
 	- desc: checks for a collision between two boxes
 	- note: I take no credit for this function
 --]]---------------------------------------------------------
-function loveframes.BoundingBox(x1, x2, y1, y2, w1, w2, h1, h2)
+function loveframes.boundingBox(x1, x2, y1, y2, w1, w2, h1, h2)
 	if x1 > x2 + w2 - 1 or y1 > y2 + h2 - 1 or x2 > x1 + w1 - 1 or y2 > y1 + h1 - 1 then
 		return false
 	else
@@ -66,10 +66,10 @@ function loveframes.BoundingBox(x1, x2, y1, y2, w1, w2, h1, h2)
 end
 
 --[[---------------------------------------------------------
-	- func: GetCollisions(object, table)
+	- func: getCollisions(object, table)
 	- desc: gets all objects colliding with the mouse
 --]]---------------------------------------------------------
-function loveframes.GetCollisions(object, t)
+function loveframes.getCollisions(object, t)
 	local x, y = love.mouse.getPosition()
 	local curstate = loveframes.state
 	local object = object or loveframes.base
@@ -78,13 +78,13 @@ function loveframes.GetCollisions(object, t)
 	local internals = object.internals
 	local objectstate = object.state
 	local t = t or {}
-	
+
 	if objectstate == curstate and visible then
 		local objectx = object.x
 		local objecty = object.y
 		local objectwidth = object.width
 		local objectheight = object.height
-		local col = loveframes.BoundingBox(x, objectx, y, objecty, 1, objectwidth, 1, objectheight)
+		local col = loveframes.boundingBox(x, objectx, y, objecty, 1, objectwidth, 1, objectheight)
 		local collide = object.collide
 		if col and collide then
 			local clickbounds = object.clickbounds
@@ -93,7 +93,7 @@ function loveframes.GetCollisions(object, t)
 				local cy = clickbounds.y
 				local cwidth = clickbounds.width
 				local cheight = clickbounds.height
-				local clickcol = loveframes.BoundingBox(x, cx, y, cy, 1, cwidth, 1, cheight)
+				local clickcol = loveframes.boundingBox(x, cx, y, cy, 1, cwidth, 1, cheight)
 				if clickcol then
 					table.insert(t, object)
 				end
@@ -103,113 +103,113 @@ function loveframes.GetCollisions(object, t)
 		end
 		if children then
 			for k, v in ipairs(children) do
-				loveframes.GetCollisions(v, t)
+				loveframes.getCollisions(v, t)
 			end
 		end
 		if internals then
 			for k, v in ipairs(internals) do
 				local type = v.type
 				if type ~= "tooltip" then
-					loveframes.GetCollisions(v, t)
+					loveframes.getCollisions(v, t)
 				end
 			end
 		end
 	end
-	
+
 	return t
 end
 
 --[[---------------------------------------------------------
-	- func: GetAllObjects(object, table)
+	- func: getAllObjects(object, table)
 	- desc: gets all active objects
 --]]---------------------------------------------------------
-function loveframes.GetAllObjects(object, t)
+function loveframes.getAllObjects(object, t)
 	local object = object or loveframes.base
 	local internals = object.internals
 	local children = object.children
 	local t = t or {}
-	
+
 	table.insert(t, object)
-	
+
 	if internals then
 		for k, v in ipairs(internals) do
-			loveframes.GetAllObjects(v, t)
+			loveframes.getAllObjects(v, t)
 		end
 	end
-	
+
 	if children then
 		for k, v in ipairs(children) do
-			loveframes.GetAllObjects(v, t)
+			loveframes.getAllObjects(v, t)
 		end
 	end
-	
+
 	return t
 
 end
 
 --[[---------------------------------------------------------
-	- func: GetDirectoryContents(directory, table)
+	- func: getDirectoryContents(directory, table)
 	- desc: gets the contents of a directory and all of
 			its subdirectories
 --]]---------------------------------------------------------
-function loveframes.GetDirectoryContents(dir, t)
+function loveframes.getDirectoryContents(dir, t)
 	local dir = dir
 	local t = t or {}
 	local dirs = {}
 	local files = love.filesystem.getDirectoryItems(dir)
-	
+
 	for k, v in ipairs(files) do
 		local isdir = love.filesystem.getInfo(dir.. "/" ..v) ~= nil and love.filesystem.getInfo(dir.. "/" ..v)["type"] == "directory" --love.filesystem.isDirectory(dir.. "/" ..v)
 		if isdir == true then
 			table.insert(dirs, dir.. "/" ..v)
 		else
-			local parts = loveframes.SplitString(v, "([.])")
+			local parts = loveframes.splitString(v, "([.])")
 			local extension = #parts > 1 and parts[#parts]
 			if #parts > 1 then
 				parts[#parts] = nil
 			end
 			local name = table.concat(parts, ".")
 			table.insert(t, {
-				path = dir, 
-				fullpath = dir.. "/" ..v, 
-				requirepath = loveframes.utf8.gsub(dir, "/", ".") .. "." ..name, 
-				name = name, 
+				path = dir,
+				fullpath = dir.. "/" ..v,
+				requirepath = loveframes.utf8.gsub(dir, "/", ".") .. "." ..name,
+				name = name,
 				extension = extension
 			})
 		end
 	end
-	
+
 	for k, v in ipairs(dirs) do
-		t = loveframes.GetDirectoryContents(v, t)
+		t = loveframes.getDirectoryContents(v, t)
 	end
-	
+
 	return t
 end
 
 
 --[[---------------------------------------------------------
-	- func: Round(num, idp)
+	- func: round(num, idp)
 	- desc: rounds a number based on the decimal limit
 	- note: I take no credit for this function
 --]]---------------------------------------------------------
-function loveframes.Round(num, idp)
+function loveframes.round(num, idp)
 	local mult = 10^(idp or 0)
-	
-    if num >= 0 then 
+
+    if num >= 0 then
 		return math.floor(num * mult + 0.5) / mult
-    else 
-		return math.ceil(num * mult - 0.5) / mult 
+    else
+		return math.ceil(num * mult - 0.5) / mult
 	end
 end
 
 --[[---------------------------------------------------------
-	- func: SplitString(string, pattern)
+	- func: splitString(string, pattern)
 	- desc: splits a string into a table based on a given pattern
 	- note: I take no credit for this function
 --]]---------------------------------------------------------
-function loveframes.SplitString(str, pat)
+function loveframes.splitString(str, pat)
 	local t = {}  -- NOTE: use {n = 0} in Lua-5.0
-	
+
 	if pat == " " then
 		local fpat = "(.-)" .. pat
 		local last_end = 1
@@ -244,18 +244,18 @@ function loveframes.SplitString(str, pat)
 			table.insert(t, cap)
 		end
 	end
-	
+
 	return t
 end
 
 --[[---------------------------------------------------------
-	- func: RemoveAll()
+	- func: removeAll()
 	- desc: removes all gui elements
 --]]---------------------------------------------------------
-function loveframes.RemoveAll()
+function loveframes.removeAll()
 	loveframes.base.children = {}
 	loveframes.base.internals = {}
-	
+
 	loveframes.hoverobject = false
 	loveframes.downobject = false
 	loveframes.modalobject = false
@@ -264,79 +264,79 @@ function loveframes.RemoveAll()
 end
 
 --[[---------------------------------------------------------
-	- func: TableHasValue(table, value)
+	- func: tableHasValue(table, value)
 	- desc: checks to see if a table has a specific value
 --]]---------------------------------------------------------
-function loveframes.TableHasValue(table, value)
+function loveframes.tableHasValue(table, value)
 	for k, v in pairs(table) do
 		if v == value then
 			return true
 		end
 	end
-	
+
 	return false
 end
 
 --[[---------------------------------------------------------
-	- func: TableHasKey(table, key)
+	- func: tableHasKey(table, key)
 	- desc: checks to see if a table has a specific key
 --]]---------------------------------------------------------
-function loveframes.TableHasKey(table, key)
+function loveframes.tableHasKey(table, key)
 	return table[key] ~= nil
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: Error(message)
+	- func: error(message)
 	- desc: displays a formatted error message
 --]]---------------------------------------------------------
-function loveframes.Error(message)
+function loveframes.error(message)
 	error("[Love Frames] " ..message)
 end
 
 --[[---------------------------------------------------------
-	- func: GetCollisionCount()
+	- func: getCollisionCount()
 	- desc: gets the total number of objects colliding with
 			the mouse
 --]]---------------------------------------------------------
-function loveframes.GetCollisionCount()
+function loveframes.getCollisionCount()
 	return loveframes.collisioncount
 end
 
 --[[---------------------------------------------------------
-	- func: GetHover()
+	- func: getHover()
 	- desc: returns loveframes.hover, can be used to check
 			if the mouse is colliding with a visible
 			Love Frames object
 --]]---------------------------------------------------------
-function loveframes.GetHover()
+function loveframes.getHover()
 	return loveframes.hover
 end
 
 --[[---------------------------------------------------------
-	- func: RectangleCollisionCheck(rect1, rect2)
+	- func: rectangleCollisionCheck(rect1, rect2)
 	- desc: checks for a collision between two rectangles
 			based on two tables containing rectangle sizes
 			and positions
 --]]---------------------------------------------------------
-function loveframes.RectangleCollisionCheck(rect1, rect2)
-	return loveframes.BoundingBox(rect1.x, rect2.x, rect1.y, rect2.y, rect1.width, rect2.width, rect1.height, rect2.height)
+function loveframes.rectangleCollisionCheck(rect1, rect2)
+	return loveframes.boundingBox(rect1.x, rect2.x, rect1.y, rect2.y, rect1.width, rect2.width, rect1.height, rect2.height)
 end
 
 --[[---------------------------------------------------------
-	- func: DeepCopy(orig)
+	- func: deepCopy(orig)
 	- desc: copies a table
 	- note: I take not credit for this function
 --]]---------------------------------------------------------
-function loveframes.DeepCopy(orig)
+function loveframes.deepCopy(orig)
 	local orig_type = type(orig)
 	local copy
 	if orig_type == 'table' then
 		copy = {}
 		for orig_key, orig_value in next, orig, nil do
-			copy[loveframes.DeepCopy(orig_key)] = loveframes.DeepCopy(orig_value)
+			copy[loveframes.deepCopy(orig_key)] = loveframes.deepCopy(orig_value)
 		end
-		setmetatable(copy, loveframes.DeepCopy(getmetatable(orig)))
+		setmetatable(copy, loveframes.deepCopy(getmetatable(orig)))
 	else -- number, string, boolean, etc
 		copy = orig
 	end
@@ -344,13 +344,13 @@ function loveframes.DeepCopy(orig)
 end
 
 --[[---------------------------------------------------------
-	- func: GetHoverObject()
+	- func: getHoverObject()
 	- desc: returns loveframes.hoverobject
 --]]---------------------------------------------------------
-function loveframes.GetHoverObject()
-	
+function loveframes.getHoverObject()
+
 	return loveframes.hoverobject
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -375,12 +375,12 @@ end
 	- func: draw()
 	- desc: draws debug information
 --]]---------------------------------------------------------
-function loveframes.DebugDraw()
+function loveframes.debugDraw()
 	local infox = 5
 	local infoy = 40
 	local topcol = {type = "None", children = {}, x = 0, y = 0, width = 0, height = 0}
 	local hoverobject = loveframes.hoverobject
-	--local objects = loveframes.GetAllObjects()
+	--local objects = loveframes.getAllObjects()
 	local version = loveframes.version
 	local stage = loveframes.stage
 	local basedir = loveframes.config["DIRECTORY"]
@@ -388,11 +388,11 @@ function loveframes.DebugDraw()
 	local fps = love.timer.getFPS()
 	local deltatime = love.timer.getDelta()
 	local font = loveframes.basicfontsmall
-	
+
 	if hoverobject then
 		topcol = hoverobject
 	end
-	
+
 	-- show frame docking zones
 	if topcol.type == "frame" then
 		for k, v in pairs(topcol.dockzones) do
@@ -403,12 +403,12 @@ function loveframes.DebugDraw()
 			love.graphics.rectangle("line", v.x, v.y, v.width, v.height)
 		end
 	end
-	
+
 	-- outline the object that the mouse is hovering over
 	love.graphics.setColor(255/255, 204/255, 51/255, 255/255)
 	love.graphics.setLineWidth(2)
 	love.graphics.rectangle("line", topcol.x - 1, topcol.y - 1, topcol.width + 2, topcol.height + 2)
-	
+
 	-- draw main debug box
 	love.graphics.setFont(font)
 	love.graphics.setColor(0, 0, 0, 200/255)
@@ -420,7 +420,7 @@ function loveframes.DebugDraw()
 	love.graphics.print("FPS: " ..fps, infox + 10, infoy + 30)
 	love.graphics.print("Delta Time: " ..deltatime, infox + 10, infoy + 40)
 	love.graphics.print("Total Objects: " ..loveframes.objectcount, infox + 10, infoy + 50)
-	
+
 	-- draw object information if needed
 	if topcol.type ~= "base" then
 		love.graphics.setColor(0, 0, 0, 200/255)

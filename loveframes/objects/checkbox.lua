@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- checkbox object
-local newobject = loveframes.NewObject("checkbox", "loveframes_object_checkbox", true)
+local newobject = loveframes.newObject("checkbox", "loveframes_object_checkbox", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -26,44 +26,44 @@ function newobject:initialize()
 	self.down = true
 	self.enabled = true
 	self.internals = {}
-	self.OnChanged = nil
+	self.onChanged = nil
 	self.groupIndex = 0
-	
-	self:SetDrawFunc()
+
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
-	
+function newobject:_update(dt)
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
-	
+
 	if not visible then
 		if not alwaysupdate then
 			return
 		end
 	end
-	
-	self:CheckHover()
-	
+
+	self:checkHover()
+
 	local hover = self.hover
 	local internals = self.internals
 	local boxwidth = self.boxwidth
 	local boxheight = self.boxheight
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
-	
+	local update = self.update
+
 	if not hover then
 		self.down = false
 	else
@@ -71,17 +71,17 @@ function newobject:update(dt)
 			self.down = true
 		end
 	end
-	
+
 	if not self.down and loveframes.downobject == self then
 		self.hover = true
 	end
-	
+
 	-- move to parent if there is a parent
 	if parent ~= base and parent.type ~= "list" then
 		self.x = self.parent.x + self.staticx
 		self.y = self.parent.y + self.staticy
 	end
-	
+
 	if internals[1] then
 		self.width = boxwidth + 5 + internals[1].width
 		if internals[1].height == boxheight then
@@ -97,11 +97,11 @@ function newobject:update(dt)
 		self.width = boxwidth
 		self.height = boxheight
 	end
-	
+
 	for k, v in ipairs(internals) do
-		v:update(dt)
+		v:_update(dt)
 	end
-	
+
 	if update then
 		update(self, dt)
 	end
@@ -117,28 +117,28 @@ function newobject:mousepressed(x, y, button)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local hover = self.hover
-	
+
 	if hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 		self.down = true
 		loveframes.downobject = self
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -146,26 +146,26 @@ end
 	- desc: called when the player releases a mouse button
 --]]---------------------------------------------------------
 function newobject:mousereleased(x, y, button)
-	
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local hover = self.hover
 	local down = self.down
 	local enabled = self.enabled
 	local checked = self.checked
-	local onchanged = self.OnChanged
-	
+	local onchanged = self.onChanged
+
 	if hover and down and enabled and button == 1 then
 		if checked then
 			if self.groupIndex == 0 then self.checked = false end
@@ -188,22 +188,22 @@ function newobject:mousereleased(x, y, button)
 			onchanged(self, self.checked)
 		end
 	end
-		
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetText(text)
+	- func: setText(text)
 	- desc: sets the object's text
 --]]---------------------------------------------------------
-function newobject:SetText(text)
+function newobject:setText(text)
 
 	local boxwidth = self.boxwidth
 	local boxheight = self.boxheight
-	
+
 	if text ~= "" then
 		self.internals = {}
-		local textobject = loveframes.Create("text")
-		local skin = loveframes.GetActiveSkin()
+		local textobject = loveframes.create("text")
+		local skin = loveframes.getActiveSkin()
 		if not skin then
 			skin = loveframes.config["DEFAULTSKIN"]
 		end
@@ -222,17 +222,17 @@ function newobject:SetText(text)
 				self.font = default_font
 			end
 		end
-		textobject:Remove()
+		textobject:remove()
 		textobject.parent = self
 		textobject.state = self.state
 		textobject.collide = false
-		textobject:SetFont(self.font)
-		textobject:SetText(text)
-		textobject.Update = function(object, dt)
+		textobject:setFont(self.font)
+		textobject:setText(text)
+		textobject.update = function(object, dt)
 			if object.height > boxheight then
-				object:SetPos(boxwidth + 5, 0)
+				object:setPosition(boxwidth + 5, 0)
 			else
-				object:SetPos(boxwidth + 5, boxheight/2 - object.height/2)
+				object:setPosition(boxwidth + 5, boxheight/2 - object.height/2)
 			end
 		end
 		table.insert(self.internals, textobject)
@@ -241,188 +241,188 @@ function newobject:SetText(text)
 		self.height = boxheight
 		self.internals = {}
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetText()
+	- func: getText()
 	- desc: gets the object's text
 --]]---------------------------------------------------------
-function newobject:GetText()
+function newobject:getText()
 
 	local internals = self.internals
 	local text = internals[1]
-	
+
 	if text then
 		return text.text
 	else
 		return false
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetSize(width, height, r1, r2)
+	- func: setSize(width, height, r1, r2)
 	- desc: sets the object's size
 --]]---------------------------------------------------------
-function newobject:SetSize(width, height, r1, r2)
+function newobject:setSize(width, height, r1, r2)
 
 	if r1 then
 		self.boxwidth = self.parent.width * width
 	else
 		self.boxwidth = width
 	end
-	
+
 	if r2 then
 		self.boxheight = self.parent.height * height
 	else
 		self.boxheight = height
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetWidth(width, relative)
+	- func: setWidth(width, relative)
 	- desc: sets the object's width
 --]]---------------------------------------------------------
-function newobject:SetWidth(width, relative)
+function newobject:setWidth(width, relative)
 
 	if relative then
 		self.boxwidth = self.parent.width * width
 	else
 		self.boxwidth = width
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetHeight(height, relative)
+	- func: setHeight(height, relative)
 	- desc: sets the object's height
 --]]---------------------------------------------------------
-function newobject:SetHeight(height, relative)
+function newobject:setHeight(height, relative)
 
 	if relative then
 		self.boxheight = self.parent.height * height
 	else
 		self.boxheight = height
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetChecked(bool)
+	- func: setChecked(bool)
 	- desc: sets whether the object is checked or not
 --]]---------------------------------------------------------
-function newobject:SetChecked(bool)
+function newobject:setChecked(bool)
 
-	local onchanged = self.OnChanged
-	
+	local onchanged = self.onChanged
+
 	self.checked = bool
-	
+
 	if onchanged then
 		onchanged(self)
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetChecked()
+	- func: getChecked()
 	- desc: gets whether the object is checked or not
 --]]---------------------------------------------------------
-function newobject:GetChecked()
+function newobject:getChecked()
 
 	return self.checked
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetFont(font)
+	- func: setFont(font)
 	- desc: sets the font of the object's text
 --]]---------------------------------------------------------
-function newobject:SetFont(font)
+function newobject:setFont(font)
 
 	local internals = self.internals
 	local text = internals[1]
-	
+
 	self.font = font
-	
+
 	if text then
-		text:SetFont(font)
+		text:setFont(font)
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: newobject:GetFont()
+	- func: newobject:getFont()
 	- desc: gets the font of the object's text
 --]]---------------------------------------------------------
-function newobject:GetFont()
+function newobject:getFont()
 
 	return self.font
 
 end
 
 --[[---------------------------------------------------------
-	- func: newobject:GetBoxHeight()
+	- func: newobject:getBoxHeight()
 	- desc: gets the object's box size
 --]]---------------------------------------------------------
-function newobject:GetBoxSize()
+function newobject:getBoxSize()
 
 	return self.boxwidth, self.boxheight
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: newobject:GetBoxWidth()
+	- func: newobject:getBoxWidth()
 	- desc: gets the object's box width
 --]]---------------------------------------------------------
-function newobject:GetBoxWidth()
+function newobject:getBoxWidth()
 
 	return self.boxwidth
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: newobject:GetBoxHeight()
+	- func: newobject:getBoxHeight()
 	- desc: gets the object's box height
 --]]---------------------------------------------------------
-function newobject:GetBoxHeight()
+function newobject:getBoxHeight()
 
 	return self.boxheight
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetClickable(bool)
+	- func: setClickable(bool)
 	- desc: sets whether or not the object is enabled
 --]]---------------------------------------------------------
-function newobject:SetEnabled(bool)
+function newobject:setEnabled(bool)
 
 	self.enabled = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetEnabled()
+	- func: getEnabled()
 	- desc: gets whether or not the object is enabled
 --]]---------------------------------------------------------
-function newobject:GetEnabled()
+function newobject:getEnabled()
 
 	return self.enabled
-	
+
 end
 
 ---------- module end ----------

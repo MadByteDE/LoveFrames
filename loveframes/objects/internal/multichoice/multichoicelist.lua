@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- multichoicelist class
-local newobject = loveframes.NewObject("multichoicelist", "loveframes_object_multichoicelist", true)
+local newobject = loveframes.newObject("multichoicelist", "loveframes_object_multichoicelist", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -41,22 +41,22 @@ function newobject:initialize(object)
 	
 	for k, v in ipairs(object.choices) do
 		local row = loveframes.objects["multichoicerow"]:new()
-		row:SetText(v)
-		self:AddItem(row)
+		row:setText(v)
+		self:addItem(row)
 	end
 	
 	table.insert(loveframes.base.internals, self)
 	
 	-- apply template properties to the object
-	loveframes.ApplyTemplatesToObject(self)
-	self:SetDrawFunc()
+	loveframes.applyTemplatesToObject(self)
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 	
 	local state = loveframes.state
 	local selfstate = self.state
@@ -77,10 +77,10 @@ function newobject:update(dt)
 	local width = love.graphics.getWidth()
 	local height = love.graphics.getHeight()
 	local x, y = love.mouse.getPosition()
-	local selfcol = loveframes.BoundingBox(x, self.x, y, self.y, 1, self.width, 1, self.height)
+	local selfcol = loveframes.boundingBox(x, self.x, y, self.y, 1, self.width, 1, self.height)
 	local parent = self.parent
 	local base = loveframes.base
-	local upadte = self.Update
+	local upadte = self.update
 	local internals = self.internals
 	local children = self.children
 	
@@ -107,12 +107,12 @@ function newobject:update(dt)
 	end
 	
 	for k, v in ipairs(internals) do
-		v:update(dt)
+		v:_update(dt)
 	end
 	
 	for k, v in ipairs(children) do
-		v:update(dt)
-		v:SetClickBounds(self.x, self.y, self.width, self.height)
+		v:_update(dt)
+		v:setClickBounds(self.x, self.y, self.width, self.height)
 		v.y = (v.parent.y + v.staticy) - self.offsety
 		v.x = (v.parent.x + v.staticx) - self.offsetx
 	end
@@ -128,7 +128,7 @@ end
 	- desc: draws the object
 --]]---------------------------------------------------------
 --[[
-function newobject:draw()
+function newobject:_draw()
 	if loveframes.state ~= self.state then
 		return
 	end
@@ -137,9 +137,9 @@ function newobject:draw()
 		return
 	end
 	
-	self:SetDrawOrder()
+	self:setDrawOrder()
 	
-	local drawfunc = self.Draw or self.drawfunc
+	local drawfunc = self.draw or self.drawfunc
 	if drawfunc then
 		drawfunc(self)
 	end
@@ -147,7 +147,7 @@ function newobject:draw()
 	local internals = self.internals
 	if internals then
 		for k, v in ipairs(internals) do
-			v:draw()
+			v:_draw()
 		end
 	end
 	
@@ -157,16 +157,16 @@ function newobject:draw()
 	local children = self.children
 	if children then
 		for k, v in ipairs(children) do
-			local col = loveframes.BoundingBox(self.x, v.x, self.y, v.y, self.width, v.width, self.height, v.height)
+			local col = loveframes.boundingBox(self.x, v.x, self.y, v.y, self.width, v.width, self.height, v.height)
 			if col then
-				v:draw()
+				v:_draw()
 			end
 		end
 	end
 	
 	love.graphics.setStencilTest()
 	
-	drawfunc = self.DrawOver or self.drawoverfunc
+	drawfunc = self.drawOver or self.drawoverfunc
 	if drawfunc then
 		drawfunc(self)
 	end
@@ -192,12 +192,12 @@ function newobject:mousepressed(x, y, button)
 		return
 	end
 	
-	local selfcol = loveframes.BoundingBox(x, self.x, y, self.y, 1, self.width, 1, self.height)
+	local selfcol = loveframes.boundingBox(x, self.x, y, self.y, 1, self.width, 1, self.height)
 	local internals = self.internals
 	local children = self.children
 	
 	if not selfcol and self.canremove and button == 1 then
-		self:Close()
+		self:close()
 	end
 	
 	for k, v in ipairs(internals) do
@@ -250,7 +250,7 @@ end
 --]]---------------------------------------------------------
 function newobject:wheelmoved(x, y)
 
-	local toplist = self:IsTopList()
+	local toplist = self:isTopList()
 	local internals = self.internals
 	local scrollamount = self.mousewheelscrollamount
 
@@ -259,19 +259,19 @@ function newobject:wheelmoved(x, y)
 		local dtscrolling = self.dtscrolling
 		if dtscrolling then
 			local dt = love.timer.getDelta()
-			bar:Scroll(-y * scrollamount * dt)
+			bar:scroll(-y * scrollamount * dt)
 		else
-			bar:Scroll(-y * scrollamount)
+			bar:scroll(-y * scrollamount)
 		end
 	end
 
 end
 
 --[[---------------------------------------------------------
-	- func: AddItem(object)
+	- func: addItem(object)
 	- desc: adds an item to the object
 --]]---------------------------------------------------------
-function newobject:AddItem(object)
+function newobject:addItem(object)
 	
 	if object.type ~= "multichoicerow" then
 		return
@@ -280,16 +280,16 @@ function newobject:AddItem(object)
 	object.parent = self
 	table.insert(self.children, object)
 	
-	self:CalculateSize()
-	self:RedoLayout()
+	self:calculateSize()
+	self:redoLayout()
 	
 end
 
 --[[---------------------------------------------------------
-	- func: RemoveItem(object)
+	- func: removeItem(object)
 	- desc: removes an item from the object
 --]]---------------------------------------------------------
-function newobject:RemoveItem(object)
+function newobject:removeItem(object)
 
 	local children = self.children
 	
@@ -299,16 +299,16 @@ function newobject:RemoveItem(object)
 		end
 	end
 	
-	self:CalculateSize()
-	self:RedoLayout()
+	self:calculateSize()
+	self:redoLayout()
 	
 end
 
 --[[---------------------------------------------------------
-	- func: CalculateSize()
+	- func: calculateSize()
 	- desc: calculates the size of the object's children
 --]]---------------------------------------------------------
-function newobject:CalculateSize()
+function newobject:calculateSize()
 
 	self.height = self.padding
 	
@@ -347,7 +347,7 @@ function newobject:CalculateSize()
 		end
 	else
 		if vbar then
-			self.internals[1]:Remove()
+			self.internals[1]:remove()
 			self.vbar = false
 			self.offsety = 0
 		end
@@ -356,10 +356,10 @@ function newobject:CalculateSize()
 end
 
 --[[---------------------------------------------------------
-	- func: RedoLayout()
+	- func: redoLayout()
 	- desc: used to redo the layour of the object
 --]]---------------------------------------------------------
-function newobject:RedoLayout()
+function newobject:redoLayout()
 
 	local children = self.children
 	local padding = self.padding
@@ -386,32 +386,32 @@ function newobject:RedoLayout()
 end
 
 --[[---------------------------------------------------------
-	- func: SetPadding(amount)
+	- func: setPadding(amount)
 	- desc: sets the object's padding
 --]]---------------------------------------------------------
-function newobject:SetPadding(amount)
+function newobject:setPadding(amount)
 
 	self.padding = amount
 	
 end
 
 --[[---------------------------------------------------------
-	- func: SetSpacing(amount)
+	- func: setSpacing(amount)
 	- desc: sets the object's spacing
 --]]---------------------------------------------------------
-function newobject:SetSpacing(amount)
+function newobject:setSpacing(amount)
 
 	self.spacing = amount
 	
 end
 
 --[[---------------------------------------------------------
-	- func: Close()
+	- func: close()
 	- desc: closes the object
 --]]---------------------------------------------------------
-function newobject:Close()
+function newobject:close()
 
-	self:Remove()
+	self:remove()
 	self.list.haslist = false
 	
 end

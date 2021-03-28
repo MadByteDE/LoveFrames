@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- imagebutton object
-local newobject = loveframes.NewObject("imagebutton", "loveframes_object_imagebutton", true)
+local newobject = loveframes.newObject("imagebutton", "loveframes_object_imagebutton", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -25,44 +25,44 @@ function newobject:initialize()
 	self.enabled = true
 	self.image = nil
 	self.imagecolor = {1, 1, 1, 1}
-	self.OnClick = nil
+	self.onClick = nil
 	self.groupIndex	= 0
 	self.checked = false
-	
-	self:SetDrawFunc()
+
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
-	
+function newobject:_update(dt)
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
-	
+
 	if not visible then
 		if not alwaysupdate then
 			return
 		end
 	end
-	
-	self:CheckHover()
-	
+
+	self:checkHover()
+
 	local hover = self.hover
 	local downobject = loveframes.downobject
 	local down = self.down
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
-	
+	local update = self.update
+
 	if not hover then
 		self.down = false
 	else
@@ -70,17 +70,17 @@ function newobject:update(dt)
 			self.down = true
 		end
 	end
-	
+
 	if not down and downobject == self then
 		self.hover = true
 	end
-	
+
 	-- move to parent if there is a parent
 	if parent ~= base then
 		self.x = self.parent.x + self.staticx
 		self.y = self.parent.y + self.staticy
 	end
-	
+
 	if update then
 		update(self, dt)
 	end
@@ -95,28 +95,28 @@ function newobject:mousepressed(x, y, button)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local hover = self.hover
-	
+
 	if hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 		self.down = true
 		loveframes.downobject = self
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -124,25 +124,25 @@ end
 	- desc: called when the player releases a mouse button
 --]]---------------------------------------------------------
 function newobject:mousereleased(x, y, button)
-	
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local hover = self.hover
 	local down = self.down
 	local clickable = self.clickable
 	local enabled = self.enabled
-	local onclick = self.OnClick
+	local onclick = self.onClick
 
 	if hover and down and clickable and button == 1 then
 		if enabled then
@@ -164,100 +164,100 @@ function newobject:mousereleased(x, y, button)
 			end
 		end
 	end
-	
+
 	self.down = false
 
 end
 
 --[[---------------------------------------------------------
-	- func: SetText(text)
+	- func: setText(text)
 	- desc: sets the object's text
 --]]---------------------------------------------------------
-function newobject:SetText(text)
+function newobject:setText(text)
 
 	self.text = text
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetText()
+	- func: getText()
 	- desc: gets the object's text
 --]]---------------------------------------------------------
-function newobject:GetText()
+function newobject:getText()
 
 	return self.text
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetFont(font)
+	- func: setFont(font)
 	- desc: sets the object's font, nil uses the skin's default
 --]]---------------------------------------------------------
-function newobject:SetFont(font)
+function newobject:setFont(font)
 
 	self.font = font
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetFont()
+	- func: getFont()
 	- desc: gets the object's font
 --]]---------------------------------------------------------
-function newobject:GetFont()
+function newobject:getFont()
 
 	return self.font
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetClickable(bool)
+	- func: setClickable(bool)
 	- desc: sets whether the object can be clicked or not
 --]]---------------------------------------------------------
-function newobject:SetClickable(bool)
+function newobject:setClickable(bool)
 
 	self.clickable = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetClickable(bool)
+	- func: getClickable(bool)
 	- desc: gets whether the object can be clicked or not
 --]]---------------------------------------------------------
-function newobject:GetClickable()
+function newobject:getClickable()
 
 	return self.clickable
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetClickable(bool)
+	- func: setClickable(bool)
 	- desc: sets whether the object is enabled or not
 --]]---------------------------------------------------------
-function newobject:SetEnabled(bool)
+function newobject:setEnabled(bool)
 
 	self.enabled = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetEnabled()
+	- func: getEnabled()
 	- desc: gets whether the object is enabled or not
 --]]---------------------------------------------------------
-function newobject:GetEnabled()
+function newobject:getEnabled()
 
 	return self.enabled
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetImage(image)
+	- func: setImage(image)
 	- desc: sets the object's image
 --]]---------------------------------------------------------
-function newobject:SetImage(image)
+function newobject:setImage(image)
 
 	if type(image) == "string" then
 		self.image = love.graphics.newImage(image)
@@ -265,99 +265,99 @@ function newobject:SetImage(image)
 	else
 		self.image = image
 	end
-	
+
 	return self
 
 end
 
 --[[---------------------------------------------------------
-	- func: GetImage()
+	- func: getImage()
 	- desc: gets whether the object is enabled or not
 --]]---------------------------------------------------------
-function newobject:GetImage()
+function newobject:getImage()
 
 	return self.image
 
 end
 
 --[[---------------------------------------------------------
-	- func: SizeToImage()
+	- func: sizeToImage()
 	- desc: makes the object the same size as its image
 --]]---------------------------------------------------------
-function newobject:SizeToImage()
+function newobject:sizeToImage()
 
 	local image = self.image
-	
+
 	if image then
 		self.width = image:getWidth()
 		self.height = image:getHeight()
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetImageSize()
+	- func: getImageSize()
 	- desc: gets the size of the object's image
 --]]---------------------------------------------------------
-function newobject:GetImageSize()
+function newobject:getImageSize()
 
 	local image = self.image
-	
+
 	if image then
 		return image:getWidth(), image:getHeight()
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetImageWidth()
+	- func: getImageWidth()
 	- desc: gets the width of the object's image
 --]]---------------------------------------------------------
-function newobject:GetImageWidth()
+function newobject:getImageWidth()
 
 	local image = self.image
-	
+
 	if image then
 		return image:getWidth()
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetImageWidth()
+	- func: getImageWidth()
 	- desc: gets the height of the object's image
 --]]---------------------------------------------------------
-function newobject:GetImageHeight()
+function newobject:getImageHeight()
 
 	local image = self.image
-	
+
 	if image then
 		return image:getHeight()
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetColor(r, g, b, a)
-	- desc: sets the object's color 
+	- func: setColor(r, g, b, a)
+	- desc: sets the object's color
 --]]---------------------------------------------------------
-function newobject:SetColor(r, g, b, a)
+function newobject:setColor(r, g, b, a)
 
 	self.imagecolor = {r, g, b, a}
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetColor()
-	- desc: gets the object's color 
+	- func: getColor()
+	- desc: gets the object's color
 --]]---------------------------------------------------------
-function newobject:GetColor()
+function newobject:getColor()
 
 	return unpack(self.imagecolor)
-	
+
 end
 
 ---------- module end ----------

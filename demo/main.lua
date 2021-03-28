@@ -3,55 +3,55 @@ local loveframes
 local tween
 local demo = {}
 
-function demo.CreateToolbar()
+function demo.createToolbar()
 	local width = love.graphics.getWidth()
 	local version = loveframes.version
 	local stage = loveframes.stage
-	
-	local toolbar = loveframes.Create("panel")
-	toolbar:SetSize(width, 35)
-	toolbar:SetPos(0, 0)
-	
-	local info = loveframes.Create("text", toolbar)
-	info:SetPos(5, 3)
-	info:SetText({
-		{color = {0, 0, 0, 1}}, 
+
+	local toolbar = loveframes.create("panel")
+	toolbar:setSize(width, 35)
+	toolbar:setPosition(0, 0)
+
+	local info = loveframes.create("text", toolbar)
+	info:setPosition(5, 3)
+	info:setText({
+		{color = {0, 0, 0, 1}},
 		"Love Frames (",
-		{color = {.5, .25, 1, 1}}, "version " ..version.. " - " ..stage, 
+		{color = {.5, .25, 1, 1}}, "version " ..version.. " - " ..stage,
 		{color = {0,  0, 0, 1}}, ")\n",
-		{color = {1, .4, 0, 1}}, "F1", 
-		{color = {0,  0, 0, 1}}, ": Toggle debug mode - ", 
-		{color = {1, .4, 0, 1}}, "F2", 
-		{color = {0,  0, 0, 1}}, ": Remove all objects"
+		{color = {1, .4, 0, 1}}, "F1",
+		{color = {0,  0, 0, 1}}, ": Toggle debug mode - ",
+		{color = {1, .4, 0, 1}}, "F2",
+		{color = {0,  0, 0, 1}}, ": remove all objects"
 	})
-	
-	demo.examplesbutton = loveframes.Create("button", toolbar)
-	demo.examplesbutton:SetPos(toolbar:GetWidth() - 105, 5)
-	demo.examplesbutton:SetSize(100, 25)
-	demo.examplesbutton:SetText("Hide Examples")
-	demo.examplesbutton.OnClick = function()
-		demo.ToggleExamplesList()
+
+	demo.examplesbutton = loveframes.create("button", toolbar)
+	demo.examplesbutton:setPosition(toolbar:getWidth() - 105, 5)
+	demo.examplesbutton:setSize(100, 25)
+	demo.examplesbutton:setText("Hide Examples")
+	demo.examplesbutton.onClick = function()
+		demo.toggleExamplesList()
 	end
-	
-	local skinslist = loveframes.Create("multichoice", toolbar)
-	skinslist:SetPos(toolbar:GetWidth() - 250, 5)
-	skinslist:SetWidth(140)
-	skinslist:SetChoice("Choose a skin")
-	skinslist.OnChoiceSelected = function(object, choice)
-		loveframes.SetActiveSkin(choice)
+
+	local skinslist = loveframes.create("multichoice", toolbar)
+	skinslist:setPosition(toolbar:getWidth() - 250, 5)
+	skinslist:setWidth(140)
+	skinslist:setChoice("Choose a skin")
+	skinslist.onChoiceSelected = function(object, choice)
+		loveframes.setActiveSkin(choice)
 	end
-	
+
 	local skins = loveframes.skins
 	for k, v in pairs(skins) do
-		skinslist:AddChoice(v.name)
+		skinslist:addChoice(v.name)
 	end
-	skinslist:Sort()
+	skinslist:sort()
 end
 
-function demo.RegisterExample(example)
+function demo.registerExample(example)
 	local examples = demo.examples
 	local category = example.category
-	
+
 	for k, v in ipairs(examples) do
 		if v.category_title == category then
 			table.insert(examples[k].registered, example)
@@ -59,59 +59,59 @@ function demo.RegisterExample(example)
 	end
 end
 
-function demo.CreateExamplesList()
+function demo.createExamplesList()
 	local examples = demo.examples
 	local width = love.graphics.getWidth()
 	local height = love.graphics.getHeight()
-	
-	demo.exampleslist = loveframes.Create("list")
-	demo.exampleslist:SetPos(width - 250, 35)
-	demo.exampleslist:SetSize(250, height - 35)
-	demo.exampleslist:SetPadding(5)
-	demo.exampleslist:SetSpacing(5)
+
+	demo.exampleslist = loveframes.create("list")
+	demo.exampleslist:setPosition(width - 250, 35)
+	demo.exampleslist:setSize(250, height - 35)
+	demo.exampleslist:setPadding(5)
+	demo.exampleslist:setSpacing(5)
 	demo.exampleslist.toggled = true
 
 	demo.tween_open  = tween.new(1, demo.exampleslist, {x = (width - 250)}, "outBounce")
-	demo.tween_close = tween.new(1, demo.exampleslist, {x = (width - 5)}, "outBounce") 
-	
+	demo.tween_close = tween.new(1, demo.exampleslist, {x = (width - 5)}, "outBounce")
+
 	for k, v in ipairs(examples) do
 		local panelheight = 0
-		local category = loveframes.Create("collapsiblecategory")
-		category:SetText(v.category_title)
-		local panel = loveframes.Create("panel")
-		panel.Draw = function() end
-		demo.exampleslist:AddItem(category)
+		local category = loveframes.create("collapsiblecategory")
+		category:setText(v.category_title)
+		local panel = loveframes.create("panel")
+		panel.draw = function() end
+		demo.exampleslist:addItem(category)
 		for key, value in ipairs(v.registered) do
-			local button = loveframes.Create("button", panel)
-			button:SetWidth(210)
-			button:SetPos(0, panelheight)
-			button:SetText(value.title)
-			button.OnClick = function()
+			local button = loveframes.create("button", panel)
+			button:setWidth(210)
+			button:setPosition(0, panelheight)
+			button:setText(value.title)
+			button.onClick = function()
 				value.func(loveframes, demo.centerarea)
 				demo.current = value
 			end
 			panelheight = panelheight + 30
 		end
-		panel:SetHeight(panelheight)
-		category:SetObject(panel)
-		category:SetOpen(true)
+		panel:setHeight(panelheight)
+		category:setObject(panel)
+		category:setOpen(true)
 	end
 end
 
-function demo.ToggleExamplesList()
+function demo.toggleExamplesList()
 
 	local toggled = demo.exampleslist.toggled
-	
+
 	if not toggled then
 		demo.exampleslist.toggled = true
 		demo.tween = demo.tween_open
-		demo.examplesbutton:SetText("Hide Examples")
+		demo.examplesbutton:setText("Hide Examples")
 	else
 		demo.exampleslist.toggled = false
 		demo.tween = demo.tween_close
-		demo.examplesbutton:SetText("Show Examples")
+		demo.examplesbutton:setText("Show Examples")
 	end
-	
+
 	demo.tween:reset()
 end
 
@@ -139,15 +139,16 @@ function love.load()
 	demo.tween = nil
 	demo.centerarea = {5, 40, 540, 555}
 
-	local files = loveframes.GetDirectoryContents("examples")
+	local files = loveframes.getDirectoryContents("examples")
 	local example
 	for k, v in ipairs(files) do
 		if v.extension == "lua" then
 			example = require(v.requirepath)
-			demo.RegisterExample(example)
+			print(example.title)
+			demo.registerExample(example)
 		end
 	end
-	
+
 	local image = love.graphics.newImage("resources/background.png")
 	image:setWrap("repeat", "repeat")
 	local width = love.graphics.getWidth()
@@ -156,14 +157,14 @@ function love.load()
 	demo.bgimage = image
 
 	-- create demo gui
-	demo.CreateToolbar()
-	demo.CreateExamplesList()
+	demo.createToolbar()
+	demo.createExamplesList()
 end
 
 function love.update(dt)
 
 	loveframes.update(dt)
-	if demo.tween then 
+	if demo.tween then
 		if demo.tween:update(dt) then demo.tween = nil end
 	end
 end
@@ -172,16 +173,16 @@ function love.draw()
 	love.graphics.setColor(1, 1, 1, 1)
 	love.graphics.draw(demo.bgimage, demo.bgquad, 0, 0)
 	loveframes.draw()
-	
+
 end
 
 function love.mousepressed(x, y, button)
 	loveframes.mousepressed(x, y, button)
 	local menu = loveframes.hoverobject and loveframes.hoverobject.menu_example
 	if menu and button == 2 then
-		menu:SetPos(x, y)
-		menu:SetVisible(true)
-		menu:MoveToTop()
+		menu:setPosition(x, y)
+		menu:setVisible(true)
+		menu:moveToTop()
 	end
 end
 
@@ -195,15 +196,15 @@ end
 
 function love.keypressed(key, isrepeat)
 	loveframes.keypressed(key, isrepeat)
-	
+
 	if key == "f1" then
 		local debug = loveframes.config["DEBUG"]
 		loveframes.config["DEBUG"] = not debug
 	elseif key == "f2" then
-		loveframes.RemoveAll()
-		demo.CreateToolbar()
-		demo.CreateExamplesList()
-		--demo.ToggleExamplesList()
+		loveframes.removeAll()
+		demo.createToolbar()
+		demo.createExamplesList()
+		--demo.toggleExamplesList()
 	end
 end
 

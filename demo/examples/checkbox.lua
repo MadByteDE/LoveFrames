@@ -4,20 +4,19 @@ example.category = "Object Demonstrations"
 
 function example.func(loveframes, centerarea)
 
-	local frame = loveframes.Create("frame")
-	frame:SetName("Checkbox")
-	frame:SetHeight(85)
-	frame:CenterWithinArea(unpack(centerarea))
+	local frame = loveframes.create("frame")
+	frame:setName("Checkbox")
+	frame:setHeight(85)
+	frame:centerWithinArea(unpack(centerarea))
 
-	local checkbox1 = loveframes.Create("checkbox", frame)
-	checkbox1:SetText("Checkbox 1")
-	checkbox1:SetPos(5, 30)
+	local checkbox1 = loveframes.create("checkbox", frame)
+	checkbox1:setText("Checkbox 1")
+	checkbox1:setPosition(5, 30)
 
-	local checkbox2 = loveframes.Create("checkbox", frame)
-	checkbox2:SetText("Checkbox 2")
-	checkbox2:SetPos(5, 60)
+	local checkbox2 = loveframes.create("checkbox", frame)
+	checkbox2:setText("Checkbox 2")
+	checkbox2:setPosition(5, 60)
 
 end
 
 return example
-

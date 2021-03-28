@@ -4,22 +4,22 @@ example.category = "Object Demonstrations"
 
 function example.func(loveframes, centerarea)
 
-	local frame = loveframes.Create("frame")
-	frame:SetName("Button")
-	frame:CenterWithinArea(unpack(centerarea))
+	local frame = loveframes.create("frame")
+	frame:setName("Button")
+	frame:centerWithinArea(unpack(centerarea))
 
-	local button = loveframes.Create("button", frame)
-	button:SetWidth(200)
-	button:SetText("Button")
-	button:Center()
-	button.OnClick = function(object, x, y)
-		object:SetText("You clicked the button!")
+	local button = loveframes.create("button", frame)
+	button:setWidth(200)
+	button:setText("Button")
+	button:center()
+	button.onClick = function(object, x, y)
+		object:setText("You clicked the button!")
 	end
-	button.OnMouseEnter = function(object)
-		object:SetText("The mouse entered the button.")
+	button.onMouseEnter = function(object)
+		object:setText("The mouse entered the button.")
 	end
-	button.OnMouseExit = function(object)
-		object:SetText("The mouse exited the button.")
+	button.onMouseExit = function(object)
+		object:setText("The mouse exited the button.")
 	end
 
 end

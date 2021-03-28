@@ -74,12 +74,12 @@ function loveframes.update(dt)
 
 	local base = loveframes.base
 	local input_cursor_set = loveframes.input_cursor_set
-	
+
 	loveframes.collisioncount = 0
 	loveframes.objectcount = 0
 	loveframes.hover = false
 	loveframes.hoverobject = false
-	
+
 	local downobject = loveframes.downobject
 	if #loveframes.collisions > 0 then
 		local top = loveframes.collisions[#loveframes.collisions]
@@ -91,8 +91,8 @@ function loveframes.update(dt)
 			end
 		end
 	end
-	
-	if loveframes.config["ENABLE_SYSTEM_CURSORS"] then 
+
+	if loveframes.config["ENABLE_SYSTEM_CURSORS"] then
 		local hoverobject = loveframes.hoverobject
 		local arrow = love.mouse.getSystemCursor("arrow")
 		local curcursor = love.mouse.getCursor()
@@ -105,42 +105,42 @@ function loveframes.update(dt)
 				end
 			elseif hoverobject.type == "frame" then
 				if not hoverobject.dragging and hoverobject.canresize then
-					if loveframes.BoundingBox(hoverobject.x, mx, hoverobject.y, my, 5, 1, 5, 1) then
+					if loveframes.boundingBox(hoverobject.x, mx, hoverobject.y, my, 5, 1, 5, 1) then
 						local sizenwse = love.mouse.getSystemCursor("sizenwse")
 						if curcursor ~= sizenwse then
 							love.mouse.setCursor(sizenwse)
 						end
-					elseif loveframes.BoundingBox(hoverobject.x + hoverobject.width - 5, mx, hoverobject.y + hoverobject.height - 5, my, 5, 1, 5, 1) then
+					elseif loveframes.boundingBox(hoverobject.x + hoverobject.width - 5, mx, hoverobject.y + hoverobject.height - 5, my, 5, 1, 5, 1) then
 						local sizenwse = love.mouse.getSystemCursor("sizenwse")
 						if curcursor ~= sizenwse then
 							love.mouse.setCursor(sizenwse)
 						end
-					elseif loveframes.BoundingBox(hoverobject.x + hoverobject.width - 5, mx, hoverobject.y, my, 5, 1, 5, 1) then
+					elseif loveframes.boundingBox(hoverobject.x + hoverobject.width - 5, mx, hoverobject.y, my, 5, 1, 5, 1) then
 						local sizenesw = love.mouse.getSystemCursor("sizenesw")
 						if curcursor ~= sizenesw then
 							love.mouse.setCursor(sizenesw)
 						end
-					elseif loveframes.BoundingBox(hoverobject.x, mx, hoverobject.y + hoverobject.height - 5, my, 5, 1, 5, 1) then
+					elseif loveframes.boundingBox(hoverobject.x, mx, hoverobject.y + hoverobject.height - 5, my, 5, 1, 5, 1) then
 						local sizenesw = love.mouse.getSystemCursor("sizenesw")
 						if curcursor ~= sizenesw then
 							love.mouse.setCursor(sizenesw)
 						end
-					elseif loveframes.BoundingBox(hoverobject.x + 5, mx, hoverobject.y, my, hoverobject.width - 10, 1, 2, 1) then
+					elseif loveframes.boundingBox(hoverobject.x + 5, mx, hoverobject.y, my, hoverobject.width - 10, 1, 2, 1) then
 						local sizens = love.mouse.getSystemCursor("sizens")
 						if curcursor ~= sizens then
 							love.mouse.setCursor(sizens)
 						end
-					elseif loveframes.BoundingBox(hoverobject.x + 5, mx, hoverobject.y + hoverobject.height - 2, my, hoverobject.width - 10, 1, 2, 1) then
+					elseif loveframes.boundingBox(hoverobject.x + 5, mx, hoverobject.y + hoverobject.height - 2, my, hoverobject.width - 10, 1, 2, 1) then
 						local sizens = love.mouse.getSystemCursor("sizens")
 						if curcursor ~= sizens then
 							love.mouse.setCursor(sizens)
 						end
-					elseif loveframes.BoundingBox(hoverobject.x, mx, hoverobject.y + 5, my, 2, 1, hoverobject.height - 10, 1) then
+					elseif loveframes.boundingBox(hoverobject.x, mx, hoverobject.y + 5, my, 2, 1, hoverobject.height - 10, 1) then
 						local sizewe = love.mouse.getSystemCursor("sizewe")
 						if curcursor ~= sizewe then
 							love.mouse.setCursor(sizewe)
 						end
-					elseif loveframes.BoundingBox(hoverobject.x + hoverobject.width - 2, mx, hoverobject.y + 5, my, 2, 1, hoverobject.height - 10, 1) then
+					elseif loveframes.boundingBox(hoverobject.x + hoverobject.width - 2, mx, hoverobject.y + 5, my, 2, 1, hoverobject.height - 10, 1) then
 						local sizewe = love.mouse.getSystemCursor("sizewe")
 						if curcursor ~= sizewe then
 							love.mouse.setCursor(sizewe)
@@ -173,9 +173,9 @@ function loveframes.update(dt)
 			end
 		end
 	end
-	
+
 	loveframes.collisions = {}
-	base:update(dt)
+	base:_update(dt)
 
 end
 
@@ -188,21 +188,21 @@ function loveframes.draw()
 	local base = loveframes.base
 	local r, g, b, a = love.graphics.getColor()
 	local font = love.graphics.getFont()
-	
-	base:draw()
-	
+
+	base:_draw()
+
 	loveframes.drawcount = 0
-	
+
 	if loveframes.config["DEBUG"] then
-		loveframes.DebugDraw()
+		loveframes.debugDraw()
 	end
-	
+
 	love.graphics.setColor(r, g, b, a)
-	
+
 	if font then
 		love.graphics.setFont(font)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -213,7 +213,7 @@ function loveframes.mousepressed(x, y, button)
 
 	local base = loveframes.base
 	base:mousepressed(x, y, button)
-	
+
 	-- close open menus
 	local bchildren = base.children
 	local hoverobject = loveframes.hoverobject
@@ -223,15 +223,15 @@ function loveframes.mousepressed(x, y, button)
 		if hoverobject then
 			local htype = hoverobject.type
 			if otype == "menu" and visible and htype ~= "menu" and htype ~= "menuoption" then
-				v:SetVisible(false)
+				v:setVisible(false)
 			end
 		else
 			if otype == "menu" and visible then
-				v:SetVisible(false)
+				v:setVisible(false)
 			end
 		end
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -242,13 +242,13 @@ function loveframes.mousereleased(x, y, button)
 
 	local base = loveframes.base
 	base:mousereleased(x, y, button)
-	
+
 	-- reset the hover object
 	if button == 1 then
 		loveframes.downobject = false
 		loveframes.selectedobject = false
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -270,7 +270,7 @@ function loveframes.keypressed(key, isrepeat)
 
 	local base = loveframes.base
 	base:keypressed(key, isrepeat)
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -281,7 +281,7 @@ function loveframes.keyreleased(key)
 
 	local base = loveframes.base
 	base:keyreleased(key)
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -292,13 +292,13 @@ function loveframes.textinput(text)
 
 	local base = loveframes.base
 	base:textinput(text)
-	
+
 end
 
 
-loveframes.LoadObjects(dir .. "/objects")
-loveframes.LoadTemplates(dir .. "/templates")
-loveframes.LoadSkins(dir .. "/skins")
+loveframes.loadObjects(dir .. "/objects")
+loveframes.loadTemplates(dir .. "/templates")
+loveframes.loadSkins(dir .. "/skins")
 
 -- create the base gui object
 local base = loveframes.objects["base"]

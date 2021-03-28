@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- scrollbar class
-local newobject = loveframes.NewObject("scrollbar", "loveframes_object_scrollbar", true)
+local newobject = loveframes.newObject("scrollbar", "loveframes_object_scrollbar", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -46,15 +46,15 @@ function newobject:initialize(parent, bartype)
 	end
 	
 	-- apply template properties to the object
-	loveframes.ApplyTemplatesToObject(self)
-	self:SetDrawFunc()
+	loveframes.applyTemplatesToObject(self)
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 	
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
@@ -65,7 +65,7 @@ function newobject:update(dt)
 		end
 	end
 	
-	self:CheckHover()
+	self:checkHover()
 	
 	local x, y     = love.mouse.getPosition()
 	local bartype  = self.bartype
@@ -93,8 +93,8 @@ function newobject:update(dt)
 		self.y = parent.y + self.staticy
 		if dragging then
 			if self.staticy ~= self.lasty then
-				if listo.OnScroll then
-					listo.OnScroll(listo)
+				if listo.onScroll then
+					listo.onScroll(listo)
 				end
 				self.lasty = self.staticy
 			end
@@ -128,11 +128,11 @@ function newobject:update(dt)
 					local linecount = #listo.lines
 					local parentheight = self.parent.height
 					if (indicatory + theight) > (y + height) then
-						self:Scroll(parentheight/linecount)
+						self:scroll(parentheight/linecount)
 					end
 				else
 					local maxy = self.maxy
-					self:Scroll(maxy)
+					self:scroll(maxy)
 				end
 			end
 		end
@@ -150,8 +150,8 @@ function newobject:update(dt)
 		self.y = parent.y + self.staticy
 		if dragging then
 			if self.staticx ~= self.lastx then
-				if listo.OnScroll then
-					listo.OnScroll(listo)
+				if listo.onScroll then
+					listo.onScroll(listo)
 				end
 				self.lastx = self.staticx
 			end
@@ -176,12 +176,12 @@ function newobject:update(dt)
 		if autoscroll then
 			if listo.itemwidth > lastwidth then
 				self.lastwidth = listo.itemwidth
-				self:Scroll(self.maxx)
+				self:scroll(self.maxx)
 			end
 		end
 	end
 	
-	local update = self.Update
+	local update = self.update
 	if update then update(self, dt) end
 	
 end
@@ -203,10 +203,10 @@ function newobject:mousepressed(x, y, button)
 		return
 	end
 	
-	local baseparent = self:GetBaseParent()
+	local baseparent = self:getBaseParent()
 	
 	if baseparent.type == "frame" then
-		baseparent:MakeTop()
+		baseparent:makeTop()
 	end
 	
 	local dragging = self.dragging
@@ -243,34 +243,34 @@ function newobject:mousereleased(x, y, button)
 end
 
 --[[---------------------------------------------------------
-	- func: SetMaxX(x)
+	- func: setMaxX(x)
 	- desc: sets the object's max x position
 --]]---------------------------------------------------------
-function newobject:SetMaxX(x)
+function newobject:setMaxX(x)
 
 	self.maxx = x
 	
 end
 
 --[[---------------------------------------------------------
-	- func: SetMaxY(y)
+	- func: setMaxY(y)
 	- desc: sets the object's max y position
 --]]---------------------------------------------------------
-function newobject:SetMaxY(y)
+function newobject:setMaxY(y)
 
 	self.maxy = y
 	
 end
 
 --[[---------------------------------------------------------
-	- func: Scroll(amount)
+	- func: scroll(amount)
 	- desc: scrolls the object
 --]]---------------------------------------------------------
-function newobject:Scroll(amount)
+function newobject:scroll(amount)
 
 	local bartype = self.bartype
 	local listo = self.parent.parent.parent
-	local onscroll = listo.OnScroll
+	local onscroll = listo.onScroll
 	
 	if bartype == "vertical" then
 		local newy = (self.y + amount)
@@ -299,14 +299,14 @@ function newobject:Scroll(amount)
 end
 
 --[[---------------------------------------------------------
-	- func: ScrollTo(position)
+	- func: scrollTo(position)
 	- desc: scrolls the object
 --]]---------------------------------------------------------
-function newobject:ScrollTo(position)
+function newobject:scrollTo(position)
 
 	local bartype = self.bartype
 	local listo = self.parent.parent.parent
-	local onscroll = listo.OnScroll
+	local onscroll = listo.onScroll
 
 	if bartype == "vertical" then
 		local maxRealPos = self.parent.height - self.height
@@ -345,10 +345,10 @@ function newobject:IsDragging()
 end
 
 --[[---------------------------------------------------------
-	- func: GetBarType()
+	- func: getBarType()
 	- desc: gets the object's bartype
 --]]---------------------------------------------------------
-function newobject:GetBarType()
+function newobject:getBarType()
 
 	return self.bartype
 	

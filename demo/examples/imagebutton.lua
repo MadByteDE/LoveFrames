@@ -3,18 +3,18 @@ example.title = "Image Button"
 example.category = "Object Demonstrations"
 
 function example.func(loveframes, centerarea)
-	
-	local frame = loveframes.Create("frame")
-	frame:SetName("Image Button")
-	frame:SetSize(138, 163)
-	frame:CenterWithinArea(unpack(centerarea))
-		
-	local imagebutton = loveframes.Create("imagebutton", frame)
-	imagebutton:SetImage("resources/magic.png")
-	imagebutton:SetPos(5, 30)
-	imagebutton:SizeToImage()
-	imagebutton:Center()
-	
+
+	local frame = loveframes.create("frame")
+	frame:setName("Image Button")
+	frame:setSize(138, 163)
+	frame:centerWithinArea(unpack(centerarea))
+
+	local imagebutton = loveframes.create("imagebutton", frame)
+	imagebutton:setImage("resources/magic.png")
+	imagebutton:setPosition(5, 30)
+	imagebutton:sizeToImage()
+	imagebutton:center()
+
 end
 
 return example

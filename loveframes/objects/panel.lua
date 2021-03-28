@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- panel object
-local newobject = loveframes.NewObject("panel", "loveframes_object_panel", true)
+local newobject = loveframes.newObject("panel", "loveframes_object_panel", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -21,14 +21,14 @@ function newobject:initialize()
 	self.internal = false
 	self.children = {}
 	
-	self:SetDrawFunc()
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the element
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 	
 	local state = loveframes.state
 	local selfstate = self.state
@@ -49,7 +49,7 @@ function newobject:update(dt)
 	local children = self.children
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
+	local update = self.update
 	
 	-- move to parent if there is a parent
 	if parent ~= base and parent.type ~= "list" then
@@ -57,10 +57,10 @@ function newobject:update(dt)
 		self.y = self.parent.y + self.staticy
 	end
 	
-	self:CheckHover()
+	self:checkHover()
 
 	for k, v in ipairs(children) do
-		v:update(dt)
+		v:_update(dt)
 	end
 	
 	if update then
@@ -92,9 +92,9 @@ function newobject:mousepressed(x, y, button)
 	local hover = self.hover
 	
 	if hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 	end
 	

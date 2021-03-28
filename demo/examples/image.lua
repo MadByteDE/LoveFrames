@@ -3,102 +3,101 @@ example.title = "Image"
 example.category = "Object Demonstrations"
 
 function example.func(loveframes, centerarea)
-	
-	local frame = loveframes.Create("frame")
-	frame:SetName("Image")
-	frame:SetSize(138, 340)
-	frame:CenterWithinArea(unpack(centerarea))
-		
-	local image = loveframes.Create("image", frame)
-	image:SetImage("resources/magic.png")
-	image:SetPos(5, 30)
-	image:SetSize(128, 120)
-		
-	local panel = loveframes.Create("panel", frame)
-	panel:SetPos(5, 160)
-	panel:SetSize(128, 170)
-		
-	local text1 = loveframes.Create("text", panel)
-	text1:SetPos(5, 5)
-	text1:SetText("Orientation: ")
-		
-	local slider1 = loveframes.Create("slider", panel)
-	slider1:SetPos(5, 20)
-	slider1:SetWidth(118)
-	slider1:SetMinMax(0, loveframes.Round(math.pi * 2, 5))
-	slider1:SetDecimals(5)
-	slider1.OnValueChanged = function(object)
-		image:SetOrientation(object:GetValue())
+
+	local frame = loveframes.create("frame")
+	frame:setName("Image")
+	frame:setSize(138, 340)
+	frame:centerWithinArea(unpack(centerarea))
+
+	local image = loveframes.create("image", frame)
+	image:setImage("resources/magic.png")
+	image:setPosition(5, 30)
+	image:setSize(128, 120)
+
+	local panel = loveframes.create("panel", frame)
+	panel:setPosition(5, 160)
+	panel:setSize(128, 170)
+
+	local text1 = loveframes.create("text", panel)
+	text1:setPosition(5, 5)
+	text1:setText("Orientation: ")
+
+	local slider1 = loveframes.create("slider", panel)
+	slider1:setPosition(5, 20)
+	slider1:setWidth(118)
+	slider1:setMinMax(0, loveframes.round(math.pi * 2, 5))
+	slider1:setDecimals(5)
+	slider1.onValueChanged = function(object)
+		image:setOrientation(object:getValue())
 	end
-		
-	text1.Update = function(object, dt)
-		local value = slider1:GetValue()
-		local max = slider1:GetMax()
+
+	text1.update = function(object, dt)
+		local value = slider1:getValue()
+		local max = slider1:getMax()
 		local progress = value/max
-		local final = loveframes.Round(360 * progress)
-		object:SetText("Orientation: " ..final)
+		local final = loveframes.round(360 * progress)
+		object:setText("Orientation: " ..final)
 	end
-		
-	local text2 = loveframes.Create("text", panel)
-	text2:SetPos(5, 40)
-	text2:SetText("Scale")
-		
-	local slider2 = loveframes.Create("slider", panel)
-	slider2:SetPos(5, 55)
-	slider2:SetWidth(118)
-	slider2:SetMinMax(.5, 2)
-	slider2:SetValue(1)
-	slider2:SetDecimals(5)
-	slider2.OnValueChanged = function(object)
-		image:SetScale(object:GetValue(), object:GetValue())
+
+	local text2 = loveframes.create("text", panel)
+	text2:setPosition(5, 40)
+	text2:setText("Scale")
+
+	local slider2 = loveframes.create("slider", panel)
+	slider2:setPosition(5, 55)
+	slider2:setWidth(118)
+	slider2:setMinMax(.5, 2)
+	slider2:setValue(1)
+	slider2:setDecimals(5)
+	slider2.onValueChanged = function(object)
+		image:setScale(object:getValue(), object:getValue())
 	end
-		
-	text2.Update = function(object, dt)
-		object:SetText("Scale: " ..slider2:GetValue())
+
+	text2.update = function(object, dt)
+		object:setText("Scale: " ..slider2:getValue())
 	end
-		
-	local text3 = loveframes.Create("text", panel)
-	text3:SetPos(5, 75)
-	text3:SetText("Offset")
-		
-	local slider3 = loveframes.Create("slider", panel)
-	slider3:SetPos(5, 90)
-	slider3:SetWidth(118)
-	slider3:SetMinMax(0, 50)
-	slider3:SetDecimals(5)
-	slider3.OnValueChanged = function(object)
-		image:SetOffset(object:GetValue(), object:GetValue())
+
+	local text3 = loveframes.create("text", panel)
+	text3:setPosition(5, 75)
+	text3:setText("Offset")
+
+	local slider3 = loveframes.create("slider", panel)
+	slider3:setPosition(5, 90)
+	slider3:setWidth(118)
+	slider3:setMinMax(0, 50)
+	slider3:setDecimals(5)
+	slider3.onValueChanged = function(object)
+		image:setOffset(object:getValue(), object:getValue())
 	end
-		
-	text3.Update = function(object, dt)
-		object:SetText("Offset: " ..slider3:GetValue())
+
+	text3.update = function(object, dt)
+		object:setText("Offset: " ..slider3:getValue())
 	end
-		
-	local text4 = loveframes.Create("text", panel)
-	text4:SetPos(5, 110)
-	text4:SetText("Shear")
-		
-	local slider4 = loveframes.Create("slider", panel)
-	slider4:SetPos(5, 125)
-	slider4:SetWidth(118)
-	slider4:SetMinMax(0, 40)
-	slider4:SetDecimals(5)
-	slider4.OnValueChanged = function(object)
-		image:SetShear(object:GetValue(), object:GetValue())
+
+	local text4 = loveframes.create("text", panel)
+	text4:setPosition(5, 110)
+	text4:setText("Shear")
+
+	local slider4 = loveframes.create("slider", panel)
+	slider4:setPosition(5, 125)
+	slider4:setWidth(118)
+	slider4:setMinMax(0, 40)
+	slider4:setDecimals(5)
+	slider4.onValueChanged = function(object)
+		image:setShear(object:getValue(), object:getValue())
 	end
-		
-	text4.Update = function(object, dt)
-		object:SetText("Shear: " ..slider4:GetValue())
+
+	text4.update = function(object, dt)
+		object:setText("Shear: " ..slider4:getValue())
 	end
-	
-    local checkbox5 = loveframes.Create("checkbox", panel)
-	checkbox5:SetText("Stretched")
-	checkbox5:SetPos(5, 150)
-	checkbox5.OnChanged = function(object, value)
+
+    local checkbox5 = loveframes.create("checkbox", panel)
+	checkbox5:setText("Stretched")
+	checkbox5:setPosition(5, 150)
+	checkbox5.onChanged = function(object, value)
 		image.stretch = value
 	end
 
 end
 
 return example
-

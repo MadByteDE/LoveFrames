@@ -7,14 +7,14 @@ return function(loveframes)
 ---------- module start ----------
 
 -- frame object
-local newobject = loveframes.NewObject("frame", "loveframes_object_frame", true)
+local newobject = loveframes.newObject("frame", "loveframes_object_frame", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
 	- desc: initializes the object
 --]]---------------------------------------------------------
 function newobject:initialize()
-	
+
 	self.type = "frame"
 	self.name = "Frame"
 	self.width = 300
@@ -57,10 +57,10 @@ function newobject:initialize()
 	self.internals = {}
 	self.children = {}
 	self.icon = nil
-	self.OnClose = nil
-	self.OnDock = nil
-	self.OnResize = nil
-	
+	self.onClose = nil
+	self.onDock = nil
+	self.onResize = nil
+
 	-- create docking zones
 	self.dockzones = {
 		top = {x = 0, y = 0, width = 0, height = 0},
@@ -68,50 +68,50 @@ function newobject:initialize()
 		left = {x = 0, y = 0, width = 0, height = 0},
 		right = {x = 0, y = 0, width = 0, height = 0}
 	}
-	
+
 	-- create the close button for the frame
 	local close = loveframes.objects["closebutton"]:new()
 	close.parent = self
-	close.OnClick = function(x, y, object)
-		local onclose = object.parent.OnClose
+	close.onClick = function(x, y, object)
+		local onclose = object.parent.onClose
 		if onclose then
 			local ret = onclose(object.parent)
 
 			if ret ~= false then
-				object.parent:Remove()
+				object.parent:remove()
 			end
 		else
-			object.parent:Remove()
+			object.parent:remove()
 		end
 	end
-	
+
 	table.insert(self.internals, close)
-	
-	self:SetDrawFunc()
+
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the element
 --]]---------------------------------------------------------
-function newobject:update(dt)
-	
+function newobject:_update(dt)
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
-	
+
 	if not visible then
 		if not alwaysupdate then
 			return
 		end
 	end
-	
+
 	local mx, my = love.mouse.getPosition()
 	local showclose = self.showclose
 	local close = self.internals[1]
@@ -132,16 +132,16 @@ function newobject:update(dt)
 	local children = self.children
 	local internals = self.internals
 	local parent = self.parent
-	local update = self.Update
-	
-	self:CheckHover()
-	
+	local update = self.update
+
+	self:checkHover()
+
 	-- update dockzones
 	self.dockzones.top = {x = self.x, y = self.y - dockzonesize, width = self.width, height = dockzonesize}
 	self.dockzones.bottom = {x = self.x, y = self.y + self.height, width = self.width, height = dockzonesize}
 	self.dockzones.left = {x = self.x - dockzonesize, y = self.y, width = dockzonesize, height = self.height}
 	self.dockzones.right = {x = self.x + self.width, y = self.y, width = dockzonesize, height = self.height}
-	
+
 	-- dragging check
 	if dragging then
 		if parent == base then
@@ -156,13 +156,13 @@ function newobject:update(dt)
 			local basechildren = loveframes.base.children
 			-- check for frames to dock with
 			if dockable then
-				local ondock = self.OnDock
+				local ondock = self.onDock
 				for k, v in ipairs(basechildren) do
 					if v.type == "frame" then
-						local topcol = loveframes.RectangleCollisionCheck(self.dockzones.bottom, v.dockzones.top)
-						local botcol = loveframes.RectangleCollisionCheck(self.dockzones.top, v.dockzones.bottom)
-						local leftcol = loveframes.RectangleCollisionCheck(self.dockzones.right, v.dockzones.left)
-						local rightcol = loveframes.RectangleCollisionCheck(self.dockzones.left, v.dockzones.right)
+						local topcol = loveframes.rectangleCollisionCheck(self.dockzones.bottom, v.dockzones.top)
+						local botcol = loveframes.rectangleCollisionCheck(self.dockzones.top, v.dockzones.bottom)
+						local leftcol = loveframes.rectangleCollisionCheck(self.dockzones.right, v.dockzones.left)
+						local rightcol = loveframes.rectangleCollisionCheck(self.dockzones.left, v.dockzones.right)
 						local candockobject = v.dockable
 						if candockobject then
 							if topcol and not dockedtop then
@@ -307,13 +307,13 @@ function newobject:update(dt)
 			end
 		end
 		if self.width ~= width or self.height ~= height then
-			local onresize = self.OnResize
+			local onresize = self.onResize
 			if onresize then
 				onresize(self, self.width, self.height)
 			end
 		end
 	end
-	
+
 	-- if screenlocked then keep within screen
 	if screenlocked then
 		local width = self.width
@@ -335,7 +335,7 @@ function newobject:update(dt)
 			self.y = screenheight - height
 		end
 	end
-	
+
 	-- keep the frame within its parent's boundaries if parentlocked
 	if parentlocked then
 		local width = self.width
@@ -357,11 +357,11 @@ function newobject:update(dt)
 			self.staticy = parentheight - height
 		end
 	end
-	
-	if parent == base and self.alwaysontop and not self:IsTopChild() then
-		self:MakeTop()
+
+	if parent == base and self.alwaysontop and not self:isTopChild() then
+		self:makeTop()
 	end
-	
+
 	if modal then
 		local tip = false
 		local key = 0
@@ -372,32 +372,32 @@ function newobject:update(dt)
 			end
 		end
 		if tip then
-			self:Remove()
-			self.modalbackground:Remove()
+			self:remove()
+			self.modalbackground:remove()
 			table.insert(basechildren, key - 2, self.modalbackground)
 			table.insert(basechildren, key - 1, self)
 		end
 		if self.modalbackground.draworder > self.draworder then
-			self:MakeTop()
+			self:makeTop()
 		end
 		if self.modalbackground.state ~= self.state then
-			self.modalbackground:SetState(self.state)
+			self.modalbackground:setState(self.state)
 		end
 	end
-	
+
 	if parent ~= base then
 		self.x = self.parent.x + self.staticx
 		self.y = self.parent.y + self.staticy
 	end
-	
+
 	for k, v in ipairs(internals) do
-		v:update(dt)
+		v:_update(dt)
 	end
-	
+
 	for k, v in ipairs(children) do
-		v:update(dt)
+		v:_update(dt)
 	end
-	
+
 	if update then
 		update(self, dt)
 	end
@@ -409,20 +409,20 @@ end
 	- desc: called when the player presses a mouse button
 --]]---------------------------------------------------------
 function newobject:mousepressed(x, y, button)
-	
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local width = self.width
 	local height = self.height
 	local internals = self.internals
@@ -430,15 +430,15 @@ function newobject:mousepressed(x, y, button)
 	local dragging = self.dragging
 	local parent = self.parent
 	local base = loveframes.base
-	
+
 	if button == 1 then
 		-- initiate dragging if not currently dragging
 		if not dragging and self.hover and self.draggable  then
 			local topcol
 			if self.canresize then
-				topcol = loveframes.BoundingBox(x, self.x + 2, y, self.y + 2, 1, self.width - 4, 1, 21)
+				topcol = loveframes.boundingBox(x, self.x + 2, y, self.y + 2, 1, self.width - 4, 1, 21)
 			else
-				topcol = loveframes.BoundingBox(x, self.x, y, self.y, 1, self.width, 1, 25)
+				topcol = loveframes.boundingBox(x, self.x, y, self.y, 1, self.width, 1, 25)
 			end
 			if topcol then
 				if parent == base then
@@ -453,7 +453,7 @@ function newobject:mousepressed(x, y, button)
 			end
 		end
 		if not self.resizing and self.canresize and loveframes.hoverobject == self then
-			if loveframes.BoundingBox(self.x, x, self.y, y, 5, 1, 5, 1) then
+			if loveframes.boundingBox(self.x, x, self.y, y, 5, 1, 5, 1) then
 				self.resizing = true
 				self.dragging = false
 				loveframes.dragobject = false
@@ -469,7 +469,7 @@ function newobject:mousepressed(x, y, button)
 				if y ~= self.y then
 					self.resizeymod = y - self.y
 				end
-			elseif loveframes.BoundingBox(self.x + self.width - 5, x, self.y + self.height - 5, y, 5, 1, 5, 1) then
+			elseif loveframes.boundingBox(self.x + self.width - 5, x, self.y + self.height - 5, y, 5, 1, 5, 1) then
 				self.resizing = true
 				self.resize_mode = "bottom_right"
 				self.resizex = x
@@ -483,7 +483,7 @@ function newobject:mousepressed(x, y, button)
 				if y ~= self.y + self.height then
 					self.resizeymod = (self.y + self.height) - y
 				end
-			elseif loveframes.BoundingBox(self.x + self.width - 5, x, self.y, y, 5, 1, 5, 1) then
+			elseif loveframes.boundingBox(self.x + self.width - 5, x, self.y, y, 5, 1, 5, 1) then
 				self.resizing = true
 				self.dragging = false
 				loveframes.dragobject = false
@@ -499,7 +499,7 @@ function newobject:mousepressed(x, y, button)
 				if y ~= self.y then
 					self.resizeymod = y - self.y
 				end
-			elseif loveframes.BoundingBox(self.x, x, self.y + self.height - 5, y, 5, 1, 5, 1) then
+			elseif loveframes.boundingBox(self.x, x, self.y + self.height - 5, y, 5, 1, 5, 1) then
 				self.resizing = true
 				self.dragging = false
 				loveframes.dragobject = false
@@ -515,7 +515,7 @@ function newobject:mousepressed(x, y, button)
 				if y ~= self.y + self.height then
 					self.resizeymod = (self.y + self.height) - y
 				end
-			elseif loveframes.BoundingBox(self.x + 5, x, self.y, y, self.width - 10, 1, 2, 1) then
+			elseif loveframes.boundingBox(self.x + 5, x, self.y, y, self.width - 10, 1, 2, 1) then
 				self.resizing = true
 				self.dragging = false
 				loveframes.dragobject = false
@@ -528,7 +528,7 @@ function newobject:mousepressed(x, y, button)
 				if y ~= self.y then
 					self.resizeymod = y - self.y
 				end
-			elseif loveframes.BoundingBox(self.x + 5, x, self.y + self.height - 2, y, self.width - 10, 1, 2, 1) then
+			elseif loveframes.boundingBox(self.x + 5, x, self.y + self.height - 2, y, self.width - 10, 1, 2, 1) then
 				self.resizing = true
 				self.dragging = false
 				loveframes.dragobject = false
@@ -539,9 +539,9 @@ function newobject:mousepressed(x, y, button)
 				self.resizeheight = self.height
 				loveframes.resizeobject = self
 				if y ~= self.y then
-					self.resizeymod = (self.y + self.height) - y 
+					self.resizeymod = (self.y + self.height) - y
 				end
-			elseif loveframes.BoundingBox(self.x, x, self.y + 5, y, 2, 1, self.height - 10, 1) then
+			elseif loveframes.boundingBox(self.x, x, self.y + 5, y, 2, 1, self.height - 10, 1) then
 				self.resizing = true
 				self.dragging = false
 				loveframes.dragobject = false
@@ -554,7 +554,7 @@ function newobject:mousepressed(x, y, button)
 				if x ~= self.x then
 					self.resizexmod = x - self.x
 				end
-			elseif loveframes.BoundingBox(self.x + self.width - 2, x, self.y + 5, y, 2, 1, self.height - 10, 1) then
+			elseif loveframes.boundingBox(self.x + self.width - 2, x, self.y + 5, y, 2, 1, self.height - 10, 1) then
 				self.resizing = true
 				self.dragging = false
 				loveframes.dragobject = false
@@ -570,18 +570,18 @@ function newobject:mousepressed(x, y, button)
 			end
 		end
 		if self.hover and button == 1 then
-			self:MakeTop()
+			self:makeTop()
 		end
 	end
-	
+
 	for k, v in ipairs(internals) do
 		v:mousepressed(x, y, button)
 	end
-		
+
 	for k, v in ipairs(children) do
 		v:mousepressed(x, y, button)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -589,26 +589,26 @@ end
 	- desc: called when the player releases a mouse button
 --]]---------------------------------------------------------
 function newobject:mousereleased(x, y, button)
-	
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local children = self.children
 	local internals = self.internals
-	
+
 	self.dragging = false
 	loveframes.dragobject = false
-	
+
 	if self.resizing then
 		self.resizex = 0
 		self.resizey = 0
@@ -619,129 +619,129 @@ function newobject:mousereleased(x, y, button)
 		self.resizing = false
 		loveframes.resizeobject = false
 	end
-	
+
 	for k, v in ipairs(internals) do
 		v:mousereleased(x, y, button)
 	end
-	
+
 	for k, v in ipairs(children) do
 		v:mousereleased(x, y, button)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetName(name)
+	- func: setName(name)
 	- desc: sets the object's name
 --]]---------------------------------------------------------
-function newobject:SetName(name)
+function newobject:setName(name)
 
 	self.name = name
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetName()
+	- func: getName()
 	- desc: gets the object's name
 --]]---------------------------------------------------------
-function newobject:GetName()
+function newobject:getName()
 
 	return self.name
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetDraggable(true/false)
+	- func: setDraggable(true/false)
 	- desc: sets whether the object can be dragged or not
 --]]---------------------------------------------------------
-function newobject:SetDraggable(bool)
+function newobject:setDraggable(bool)
 
 	self.draggable = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetDraggable()
+	- func: getDraggable()
 	- desc: gets whether the object can be dragged ot not
 --]]---------------------------------------------------------
-function newobject:GetDraggable()
+function newobject:getDraggable()
 
 	return self.draggable
-	
+
 end
 
 
 --[[---------------------------------------------------------
-	- func: SetScreenLocked(bool)
+	- func: setScreenLocked(bool)
 	- desc: sets whether the object can be moved passed the
 			boundaries of the window or not
 --]]---------------------------------------------------------
-function newobject:SetScreenLocked(bool)
+function newobject:setScreenLocked(bool)
 
 	self.screenlocked = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetScreenLocked()
+	- func: getScreenLocked()
 	- desc: gets whether the object can be moved passed the
 			boundaries of window or not
 --]]---------------------------------------------------------
-function newobject:GetScreenLocked()
+function newobject:getScreenLocked()
 
 	return self.screenlocked
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: ShowCloseButton(bool)
-	- desc: sets whether the object's close button should 
+	- func: showCloseButton(bool)
+	- desc: sets whether the object's close button should
 			be drawn
 --]]---------------------------------------------------------
-function newobject:ShowCloseButton(bool)
+function newobject:showCloseButton(bool)
 
 	local close = self.internals[1]
 
 	close.visible = bool
 	self.showclose = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: MakeTop()
+	- func: makeTop()
 	- desc: makes the object the top object in the drawing
 			order
 --]]---------------------------------------------------------
-function newobject:MakeTop()
-	
+function newobject:makeTop()
+
 	local key = 0
 	local base = loveframes.base
 	local basechildren = base.children
 	local numbasechildren = #basechildren
-	
+
 	-- check to see if the object's parent is not the base object
 	if self.parent ~= base then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 		return self
 	end
-	
+
 	-- check to see if the object is the only child of the base object
 	if numbasechildren == 1 then
 		return self
 	end
-	
+
 	-- check to see if the object is already at the top
 	if basechildren[numbasechildren] == self then
 		return self
 	end
-	
+
 	-- make this the top object
 	for k, v in ipairs(basechildren) do
 		if v == self then
@@ -751,32 +751,32 @@ function newobject:MakeTop()
 			break
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetModal(bool)
+	- func: setModal(bool)
 	- desc: sets whether or not the object is in a modal
 			state
 --]]---------------------------------------------------------
-function newobject:SetModal(bool)
+function newobject:setModal(bool)
 
 	local modalobject = loveframes.modalobject
 	local mbackground = self.modalbackground
 	local parent = self.parent
 	local base = loveframes.base
-	
+
 	if parent ~= base then
 		return
 	end
-	
+
 	self.modal = bool
-	
+
 	if bool then
 		if modalobject then
-			modalobject:SetModal(false)
+			modalobject:setModal(false)
 		end
 		loveframes.modalobject = self
 		if not mbackground then
@@ -787,115 +787,115 @@ function newobject:SetModal(bool)
 		if modalobject == self then
 			loveframes.modalobject = false
 			if mbackground then
-				self.modalbackground:Remove()
+				self.modalbackground:remove()
 				self.modalbackground = false
 				self.modal = false
 			end
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetModal()
+	- func: getModal()
 	- desc: gets whether or not the object is in a modal
 			state
 --]]---------------------------------------------------------
-function newobject:GetModal()
+function newobject:getModal()
 
 	return self.modal
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetVisible(bool)
+	- func: setVisible(bool)
 	- desc: set's whether the object is visible or not
 --]]---------------------------------------------------------
-function newobject:SetVisible(bool)
+function newobject:setVisible(bool)
 
 	local children = self.children
 	local internals = self.internals
 	local closebutton = internals[1]
-	
+
 	self.visible = bool
-	
+
 	for k, v in ipairs(children) do
-		v:SetVisible(bool)
+		v:setVisible(bool)
 	end
 
 	if self.showclose then
 		closebutton.visible = bool
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetParentLocked(bool)
+	- func: setParentLocked(bool)
 	- desc: sets whether the object can be moved passed the
 			boundaries of its parent or not
 --]]---------------------------------------------------------
-function newobject:SetParentLocked(bool)
+function newobject:setParentLocked(bool)
 
 	self.parentlocked = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetParentLocked(bool)
+	- func: getParentLocked(bool)
 	- desc: gets whether the object can be moved passed the
 			boundaries of its parent or not
 --]]---------------------------------------------------------
-function newobject:GetParentLocked()
+function newobject:getParentLocked()
 
 	return self.parentlocked
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetIcon(icon)
+	- func: setIcon(icon)
 	- desc: sets the object's icon
 --]]---------------------------------------------------------
-function newobject:SetIcon(icon)
-	
+function newobject:setIcon(icon)
+
 	if type(icon) == "string" then
 		self.icon = love.graphics.newImage(icon)
 		self.icon:setFilter("nearest", "nearest")
 	else
 		self.icon = icon
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetIcon()
+	- func: getIcon()
 	- desc: gets the object's icon
 --]]---------------------------------------------------------
-function newobject:GetIcon()
+function newobject:getIcon()
 
 	local icon = self.icon
-	
+
 	if icon then
 		return icon
 	end
-	
+
 	return false
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetDockable(dockable)
+	- func: setDockable(dockable)
 	- desc: sets whether or not the object can dock onto
-			another object of its type or be docked 
+			another object of its type or be docked
 			by another object of its type
 --]]---------------------------------------------------------
-function newobject:SetDockable(dockable)
+function newobject:setDockable(dockable)
 
 	self.dockable = dockable
 	return self
@@ -903,148 +903,148 @@ function newobject:SetDockable(dockable)
 end
 
 --[[---------------------------------------------------------
-	- func: GetDockable()
+	- func: getDockable()
 	- desc: gets whether or not the object can dock onto
-			another object of its type or be docked 
+			another object of its type or be docked
 			by another object of its type
 --]]---------------------------------------------------------
-function newobject:GetDockable()
+function newobject:getDockable()
 
 	return self.dockable
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetDockZoneSize(size)
+	- func: setDockZoneSize(size)
 	- desc: sets the size of the object's docking zone
 --]]---------------------------------------------------------
-function newobject:SetDockZoneSize(size)
+function newobject:setDockZoneSize(size)
 
 	self.dockzonesize = size
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetDockZoneSize(size)
+	- func: getDockZoneSize(size)
 	- desc: gets the size of the object's docking zone
 --]]---------------------------------------------------------
-function newobject:GetDockZoneSize()
+function newobject:getDockZoneSize()
 
 	return self.dockzonesize
 
 end
 
 --[[---------------------------------------------------------
-	- func: SetResizable(bool)
+	- func: setResizable(bool)
 	- desc: sets whether or not the object can be resized
 --]]---------------------------------------------------------
-function newobject:SetResizable(bool)
+function newobject:setResizable(bool)
 
 	self.canresize = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetResizable()
+	- func: getResizable()
 	- desc: gets whether or not the object can be resized
 --]]---------------------------------------------------------
-function newobject:GetResizable()
+function newobject:getResizable()
 
 	return self.canresize
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMinWidth(width)
+	- func: setMinWidth(width)
 	- desc: sets the object's minimum width
 --]]---------------------------------------------------------
-function newobject:SetMinWidth(width)
+function newobject:setMinWidth(width)
 
 	self.minwidth = width
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMinWidth()
+	- func: getMinWidth()
 	- desc: gets the object's minimum width
 --]]---------------------------------------------------------
-function newobject:GetMinWidth()
+function newobject:getMinWidth()
 
 	return self.minwidth
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMaxWidth(width)
+	- func: setMaxWidth(width)
 	- desc: sets the object's maximum width
 --]]---------------------------------------------------------
-function newobject:SetMaxWidth(width)
+function newobject:setMaxWidth(width)
 
 	self.maxwidth = width
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMaxWidth()
+	- func: getMaxWidth()
 	- desc: gets the object's maximum width
 --]]---------------------------------------------------------
-function newobject:GetMaxWidth()
+function newobject:getMaxWidth()
 
 	return self.maxwidth
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMinHeight(height)
+	- func: setMinHeight(height)
 	- desc: sets the object's minimum height
 --]]---------------------------------------------------------
-function newobject:SetMinHeight(height)
+function newobject:setMinHeight(height)
 
 	self.minheight = height
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMinHeight()
+	- func: getMinHeight()
 	- desc: gets the object's minimum height
 --]]---------------------------------------------------------
-function newobject:GetMinHeight()
+function newobject:getMinHeight()
 
 	return self.minheight
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMaxHeight(height)
+	- func: setMaxHeight(height)
 	- desc: sets the object's maximum height
 --]]---------------------------------------------------------
-function newobject:SetMaxHeight(height)
+function newobject:setMaxHeight(height)
 
 	self.maxheight = height
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMaxHeight()
+	- func: getMaxHeight()
 	- desc: gets the object's maximum height
 --]]---------------------------------------------------------
-function newobject:GetMaxHeight()
+function newobject:getMaxHeight()
 
 	return self.maxheight
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMinSize(width, height)
+	- func: setMinSize(width, height)
 	- desc: sets the object's minimum size
 --]]---------------------------------------------------------
-function newobject:SetMinSize(width, height)
+function newobject:setMinSize(width, height)
 
 	self.minwidth = width
 	self.minheight = height
@@ -1053,20 +1053,20 @@ function newobject:SetMinSize(width, height)
 end
 
 --[[---------------------------------------------------------
-	- func: GetMinSize()
+	- func: getMinSize()
 	- desc: gets the object's minimum size
 --]]---------------------------------------------------------
-function newobject:GetMinSize()
+function newobject:getMinSize()
 
 	return self.minwidth, self.maxwidth
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMaxSize(width, height)
+	- func: setMaxSize(width, height)
 	- desc: sets the object's maximum size
 --]]---------------------------------------------------------
-function newobject:SetMaxSize(width, height)
+function newobject:setMaxSize(width, height)
 
 	self.maxwidth = width
 	self.maxheight = height
@@ -1075,36 +1075,36 @@ function newobject:SetMaxSize(width, height)
 end
 
 --[[---------------------------------------------------------
-	- func: GetMaxSize()
+	- func: getMaxSize()
 	- desc: gets the object's maximum size
 --]]---------------------------------------------------------
-function newobject:GetMaxSize()
+function newobject:getMaxSize()
 
 	return self.maxwidth, self.maxheight
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetAlwaysOnTop(bool)
+	- func: setAlwaysOnTop(bool)
 	- desc: sets whether or not a frame should always be
 			drawn on top of other objects
 --]]---------------------------------------------------------
-function newobject:SetAlwaysOnTop(bool)
+function newobject:setAlwaysOnTop(bool)
 
 	self.alwaysontop = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetAlwaysOnTop()
+	- func: getAlwaysOnTop()
 	- desc: gets whether or not a frame should always be
 			drawn on top of other objects
 --]]---------------------------------------------------------
-function newobject:GetAlwaysOnTop()
+function newobject:getAlwaysOnTop()
 
 	return self.alwaysontop
-	
+
 end
 
 ---------- module end ----------

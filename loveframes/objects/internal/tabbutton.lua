@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- tabbutton class
-local newobject = loveframes.NewObject("tabbutton", "loveframes_object_tabbutton", true)
+local newobject = loveframes.newObject("tabbutton", "loveframes_object_tabbutton", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -33,13 +33,13 @@ function newobject:initialize(parent, text, tabnumber, tip, image, onopened, onc
 	
 	if tip then
 		self.tooltip = loveframes.objects["tooltip"]:new(self, tip)
-		self.tooltip:SetFollowCursor(false)
-		self.tooltip:SetFollowObject(true)
-		self.tooltip:SetOffsets(0, -(self.tooltip.internals[1]:GetHeight() + 12))
+		self.tooltip:setFollowCursor(false)
+		self.tooltip:setFollowObject(true)
+		self.tooltip:setOffsets(0, -(self.tooltip.internals[1]:getHeight() + 12))
 	end
 	
 	if image then
-		self:SetImage(image)
+		self:setImage(image)
 	end
 	
 	if onopened then
@@ -51,16 +51,16 @@ function newobject:initialize(parent, text, tabnumber, tip, image, onopened, onc
 	end
 	
 	-- apply template properties to the object
-	loveframes.ApplyTemplatesToObject(self)
+	loveframes.applyTemplatesToObject(self)
 	
-	self:SetDrawFunc()
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 	
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
@@ -73,10 +73,10 @@ function newobject:update(dt)
 	
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
+	local update = self.update
 	
-	self:CheckHover()
-	self:SetClickBounds(parent.x, parent.y, parent.width, parent.height)
+	self:checkHover()
+	self:setClickBounds(parent.x, parent.y, parent.width, parent.height)
 	
 	if update then
 		update(self, dt)
@@ -100,9 +100,9 @@ function newobject:mousepressed(x, y, button)
 	local internals = self.internals
 	
 	if hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 		self.down = true
 		loveframes.downobject = self
@@ -133,7 +133,7 @@ function newobject:mousereleased(x, y, button)
 			local onopened = self.OnOpened
 			local prevtab = internals[tab]
 			local onclosed = prevtab.OnClosed
-			parent:SwitchToTab(tabnumber)
+			parent:switchToTab(tabnumber)
 			if onopened then
 				onopened(self)
 			end
@@ -148,30 +148,30 @@ function newobject:mousereleased(x, y, button)
 end
 
 --[[---------------------------------------------------------
-	- func: SetText(text)
+	- func: setText(text)
 	- desc: sets the object's text
 --]]---------------------------------------------------------
-function newobject:SetText(text)
+function newobject:setText(text)
 
 	self.text = text
 	
 end
 
 --[[---------------------------------------------------------
-	- func: GetText()
+	- func: getText()
 	- desc: gets the object's text
 --]]---------------------------------------------------------
-function newobject:GetText()
+function newobject:getText()
 
 	return self.text
 	
 end
 
 --[[---------------------------------------------------------
-	- func: SetImage(image)
+	- func: setImage(image)
 	- desc: adds an image to the object
 --]]---------------------------------------------------------
-function newobject:SetImage(image)
+function newobject:setImage(image)
 
 	if type(image) == "string" then
 		self.image = love.graphics.newImage(image)
@@ -182,20 +182,20 @@ function newobject:SetImage(image)
 end
 
 --[[---------------------------------------------------------
-	- func: GetImage()
+	- func: getImage()
 	- desc: gets the object's image
 --]]---------------------------------------------------------
-function newobject:GetImage()
+function newobject:getImage()
 
 	return self.image
 	
 end
 
 --[[---------------------------------------------------------
-	- func: GetTabNumber()
+	- func: getTabNumber()
 	- desc: gets the object's tab number
 --]]---------------------------------------------------------
-function newobject:GetTabNumber()
+function newobject:getTabNumber()
 
 	return self.tabnumber
 	

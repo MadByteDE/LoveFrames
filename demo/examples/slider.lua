@@ -4,24 +4,24 @@ example.category = "Object Demonstrations"
 
 function example.func(loveframes, centerarea)
 	
-	local frame = loveframes.Create("frame")
-	frame:SetName("Slider")
-	frame:SetSize(300, 275)
-	frame:CenterWithinArea(unpack(centerarea))
+	local frame = loveframes.create("frame")
+	frame:setName("Slider")
+	frame:setSize(300, 275)
+	frame:centerWithinArea(unpack(centerarea))
 		
-	local slider1 = loveframes.Create("slider", frame)
-	slider1:SetPos(5, 30)
-	slider1:SetWidth(290)
-	slider1:SetMinMax(0, 100)
+	local slider1 = loveframes.create("slider", frame)
+	slider1:setPosition(5, 30)
+	slider1:setWidth(290)
+	slider1:setMinMax(0, 100)
 		
-	local slider2 = loveframes.Create("slider", frame)
-	slider2:SetPos(5, 60)
-	slider2:SetHeight(200)
-	slider2:SetMinMax(0, 100)
-	slider2:SetButtonSize(20, 10)
-	slider2:SetSlideType("vertical")
-	slider2.Update = function(object, dt)
-		object:CenterX()
+	local slider2 = loveframes.create("slider", frame)
+	slider2:setPosition(5, 60)
+	slider2:setHeight(200)
+	slider2:setMinMax(0, 100)
+	slider2:setButtonSize(20, 10)
+	slider2:setSlideType("vertical")
+	slider2.update = function(object, dt)
+		object:centerX()
 	end
 	
 end

@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- progressbar object
-local newobject = loveframes.NewObject("progressbar", "loveframes_object_progressbar", true)
+local newobject = loveframes.newObject("progressbar", "loveframes_object_progressbar", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -30,33 +30,33 @@ function newobject:initialize()
 	self.completed = false
 	self.lerp = false
 	self.internal = false
-	self.OnComplete = nil
-	
-	self:SetDrawFunc()
+	self.onComplete = nil
+
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
-	
+
 	if not visible then
 		if not alwaysupdate then
 			return
 		end
 	end
-	
+
 	local lerp = self.lerp
 	local lerprate = self.lerprate
 	local lerpvalue = self.lerpvalue
@@ -66,11 +66,11 @@ function newobject:update(dt)
 	local completed = self.completed
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
-	local oncomplete = self.OnComplete
-	
-	self:CheckHover()
-	
+	local update = self.update
+	local oncomplete = self.onComplete
+
+	self:checkHover()
+
 	-- caclulate barwidth
 	if lerp then
 		if lerpfrom < lerpto then
@@ -106,13 +106,13 @@ function newobject:update(dt)
 			self.value = self.max
 		end
 	end
-	
+
 	-- move to parent if there is a parent
 	if parent ~= base then
 		self.x = self.parent.x + self.staticx
 		self.y = self.parent.y + self.staticy
 	end
-	
+
 	-- completion check
 	if not completed then
 		if self.value >= self.max then
@@ -122,86 +122,86 @@ function newobject:update(dt)
 			end
 		end
 	end
-	
+
 	if update then
 		update(self, dt)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMax(max)
+	- func: setMax(max)
 	- desc: sets the object's maximum value
 --]]---------------------------------------------------------
-function newobject:SetMax(max)
+function newobject:setMax(max)
 
 	self.max = max
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMax()
+	- func: getMax()
 	- desc: gets the object's maximum value
 --]]---------------------------------------------------------
-function newobject:GetMax()
+function newobject:getMax()
 
 	return self.max
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMin(min)
+	- func: setMin(min)
 	- desc: sets the object's minimum value
 --]]---------------------------------------------------------
-function newobject:SetMin(min)
+function newobject:setMin(min)
 
 	self.min = min
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMin()
+	- func: getMin()
 	- desc: gets the object's minimum value
 --]]---------------------------------------------------------
-function newobject:GetMin()
+function newobject:getMin()
 
 	return self.min
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMinMax()
+	- func: setMinMax()
 	- desc: sets the object's minimum and maximum values
 --]]---------------------------------------------------------
-function newobject:SetMinMax(min, max)
+function newobject:setMinMax(min, max)
 
 	self.min = min
 	self.max = max
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMinMax()
+	- func: getMinMax()
 	- desc: gets the object's minimum and maximum values
 --]]---------------------------------------------------------
-function newobject:GetMinMax()
+function newobject:getMinMax()
 
 	return self.min, self.max
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetValue(value)
+	- func: setValue(value)
 	- desc: sets the object's value
 --]]---------------------------------------------------------
-function newobject:SetValue(value)
+function newobject:setValue(value)
 
 	local lerp = self.lerp
-	
+
 	if lerp then
 		self.lerpvalue = self.lerpvalue
 		self.lerpto = value
@@ -210,108 +210,108 @@ function newobject:SetValue(value)
 	else
 		self.value = value
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetValue()
+	- func: getValue()
 	- desc: gets the object's value
 --]]---------------------------------------------------------
-function newobject:GetValue()
+function newobject:getValue()
 
 	return self.value
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetLerp(bool)
+	- func: setLerp(bool)
 	- desc: sets whether or not the object should lerp
 			when changing between values
 --]]---------------------------------------------------------
-function newobject:SetLerp(bool)
+function newobject:setLerp(bool)
 
 	self.lerp = bool
-	self.lerpto = self:GetValue()
-	self.lerpvalue = self:GetValue()
-	
+	self.lerpto = self:getValue()
+	self.lerpvalue = self:getValue()
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetLerp()
+	- func: getLerp()
 	- desc: gets whether or not the object should lerp
 			when changing between values
 --]]---------------------------------------------------------
-function newobject:GetLerp()
+function newobject:getLerp()
 
 	return self.lerp
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetLerpRate(rate)
+	- func: setLerpRate(rate)
 	- desc: sets the object's lerp rate
 --]]---------------------------------------------------------
-function newobject:SetLerpRate(rate)
+function newobject:setLerpRate(rate)
 
 	self.lerprate = rate
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetLerpRate()
+	- func: getLerpRate()
 	- desc: gets the object's lerp rate
 --]]---------------------------------------------------------
-function newobject:GetLerpRate()
+function newobject:getLerpRate()
 
 	return self.lerprate
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetCompleted()
+	- func: getCompleted()
 	- desc: gets whether or not the object has reached its
 			maximum value
 --]]---------------------------------------------------------
-function newobject:GetCompleted()
+function newobject:getCompleted()
 
 	return self.completed
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetBarWidth()
+	- func: getBarWidth()
 	- desc: gets the object's bar width
 --]]---------------------------------------------------------
-function newobject:GetBarWidth()
-	
+function newobject:getBarWidth()
+
 	return self.barwidth
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetText(text)
+	- func: setText(text)
 	- desc: sets the object's text
 --]]---------------------------------------------------------
-function newobject:SetText(text)
+function newobject:setText(text)
 
 	self.text = text
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetText()
+	- func: getText()
 	- desc: gets the object's text
 --]]---------------------------------------------------------
-function newobject:GetText()
+function newobject:getText()
 
 	return self.text
-	
+
 end
 
 ---------- module end ----------

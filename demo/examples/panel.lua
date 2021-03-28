@@ -4,13 +4,13 @@ example.category = "Object Demonstrations"
 
 function example.func(loveframes, centerarea)
 	
-	local frame = loveframes.Create("frame")
-	frame:SetName("Panel")
-	frame:SetSize(210, 85)
-	frame:CenterWithinArea(unpack(centerarea))
+	local frame = loveframes.create("frame")
+	frame:setName("Panel")
+	frame:setSize(210, 85)
+	frame:centerWithinArea(unpack(centerarea))
 		
-	local panel = loveframes.Create("panel", frame)
-	panel:SetPos(5, 30)
+	local panel = loveframes.create("panel", frame)
+	panel:setPosition(5, 30)
 	
 end
 

@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- multichoicerow class
-local newobject = loveframes.NewObject("multichoicerow", "loveframes_object_multichoicerow", true)
+local newobject = loveframes.newObject("multichoicerow", "loveframes_object_multichoicerow", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -25,15 +25,15 @@ function newobject:initialize()
 	self.canclick = false
 	
 	-- apply template properties to the object
-	loveframes.ApplyTemplatesToObject(self)
-	self:SetDrawFunc()
+	loveframes.applyTemplatesToObject(self)
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 	
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
@@ -46,9 +46,9 @@ function newobject:update(dt)
 	
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
+	local update = self.update
 	
-	self:CheckHover()
+	self:checkHover()
 	
 	if not self.hover then
 		self.down = false
@@ -110,7 +110,7 @@ function newobject:mousereleased(x, y, button)
 	local text = self.text
 	
 	if self.hover and self.down and self.canclick and button == 1 then
-		self.parent.list:SelectChoice(text)
+		self.parent.list:selectChoice(text)
 	end
 	
 	self.down = false
@@ -128,26 +128,26 @@ function newobject:keypressed(key, isrepeat)
 	local selectedobject = loveframes.selectedobject
 	
 	if key == "return" and selectedobject == self then
-		self.parent.list:SelectChoice(text)
+		self.parent.list:selectChoice(text)
 	end
 
 end
 	
 --[[---------------------------------------------------------
-	- func: SetText(text)
+	- func: setText(text)
 	- desc: sets the object's text
 --]]---------------------------------------------------------
-function newobject:SetText(text)
+function newobject:setText(text)
 
 	self.text = text
 	
 end
 
 --[[---------------------------------------------------------
-	- func: GetText()
+	- func: getText()
 	- desc: gets the object's text
 --]]---------------------------------------------------------
-function newobject:GetText()
+function newobject:getText()
 
 	return self.text
 	

@@ -7,14 +7,14 @@ return function(loveframes)
 ---------- module start ----------
 
 -- form object
-local newobject = loveframes.NewObject("form", "loveframes_object_form", true)
+local newobject = loveframes.newObject("form", "loveframes_object_form", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
 	- desc: initializes the object
 --]]---------------------------------------------------------
 function newobject:initialize()
-	
+
 	self.type = "form"
 	self.name = "Form"
 	self.layout = "vertical"
@@ -25,49 +25,49 @@ function newobject:initialize()
 	self.topmargin = 12
 	self.internal = false
 	self.children = {}
-	
-	self:SetDrawFunc()
+
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the element
 --]]---------------------------------------------------------
-function newobject:update(dt)
-	
+function newobject:_update(dt)
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
-	
+
 	if not visible then
 		if not alwaysupdate then
 			return
 		end
 	end
-	
+
 	local children = self.children
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
-	
+	local update = self.update
+
 	-- move to parent if there is a parent
 	if parent ~= base and parent.type ~= "list" then
 		self.x = self.parent.x + self.staticx
 		self.y = self.parent.y + self.staticy
 	end
-	
-	self:CheckHover()
+
+	self:checkHover()
 
 	for k, v in ipairs(children) do
-		v:update(dt)
+		v:_update(dt)
 	end
-	
+
 	if update then
 		update(self, dt)
 	end
@@ -82,31 +82,31 @@ function newobject:mousepressed(x, y, button)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local children = self.children
 	local hover = self.hover
-	
+
 	if hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 	end
-	
+
 	for k, v in ipairs(children) do
 		v:mousepressed(x, y, button)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -117,29 +117,29 @@ function newobject:mousereleased(x, y, button)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible  = self.visible
 	local children = self.children
-	
+
 	if not visible then
 		return
 	end
-	
+
 	for k, v in ipairs(children) do
 		v:mousereleased(x, y, button)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: AddItem(object)
+	- func: addItem(object)
 	- desc: adds an item to the object
 --]]---------------------------------------------------------
-function newobject:AddItem(object)
+function newobject:addItem(object)
 
 	local objtype = object.type
 	if objtype == "frame" then
@@ -148,47 +148,47 @@ function newobject:AddItem(object)
 
 	local children = self.children
 	local state = self.state
-	
-	object:Remove()
+
+	object:remove()
 	object.parent = self
-	object:SetState(state)
-	
+	object:setState(state)
+
 	table.insert(children, object)
-	self:LayoutObjects()
-	
+	self:layoutObjects()
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: RemoveItem(object or number)
+	- func: removeItem(object or number)
 	- desc: removes an item from the object
 --]]---------------------------------------------------------
-function newobject:RemoveItem(data)
+function newobject:removeItem(data)
 
 	local dtype = type(data)
-	
+
 	if dtype == "number" then
 		local children = self.children
 		local item = children[data]
 		if item then
-			item:Remove()
+			item:remove()
 		end
 	else
-		data:Remove()
+		data:remove()
 	end
-	
-	self:LayoutObjects()
+
+	self:layoutObjects()
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: LayoutObjects()
+	- func: layoutObjects()
 	- desc: positions the object's children and calculates
 			a new size for the object
 --]]---------------------------------------------------------
-function newobject:LayoutObjects()
+function newobject:layoutObjects()
 
 	local layout = self.layout
 	local padding = self.padding
@@ -199,7 +199,7 @@ function newobject:LayoutObjects()
 	local height = padding * 2 + topmargin
 	local x = padding
 	local y = padding + topmargin
-	
+
 	if layout == "vertical" then
 		local largest_width = 0
 		for k, v in ipairs(children) do
@@ -229,38 +229,38 @@ function newobject:LayoutObjects()
 		self.width = width
 		self.height = height + largest_height
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetLayoutType(ltype)
+	- func: setLayoutType(ltype)
 	- desc: sets the object's layout type
 --]]---------------------------------------------------------
-function newobject:SetLayoutType(ltype)
+function newobject:setLayoutType(ltype)
 
 	self.layout = ltype
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetLayoutType()
+	- func: getLayoutType()
 	- desc: gets the object's layout type
 --]]---------------------------------------------------------
-function newobject:GetLayoutType()
+function newobject:getLayoutType()
 
 	return self.layout
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetTopMargin(margin)
+	- func: setTopMargin(margin)
 	- desc: sets the margin between the top of the object
 			and its children
 --]]---------------------------------------------------------
-function newobject:SetTopMargin(margin)
+function newobject:setTopMargin(margin)
 
 	self.topmargin = margin
 	return self
@@ -268,35 +268,35 @@ function newobject:SetTopMargin(margin)
 end
 
 --[[---------------------------------------------------------
-	- func: GetTopMargin()
+	- func: getTopMargin()
 	- desc: gets the margin between the top of the object
 			and its children
 --]]---------------------------------------------------------
-function newobject:GetTopMargin()
+function newobject:getTopMargin()
 
 	return self.topmargin
 
 end
 
 --[[---------------------------------------------------------
-	- func: SetName(name)
+	- func: setName(name)
 	- desc: sets the object's name
 --]]---------------------------------------------------------
-function newobject:SetName(name)
+function newobject:setName(name)
 
 	self.name = name
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetName()
+	- func: getName()
 	- desc: gets the object's name
 --]]---------------------------------------------------------
-function newobject:GetName()
+function newobject:getName()
 
 	return self.name
-	
+
 end
 
 ---------- module end ----------

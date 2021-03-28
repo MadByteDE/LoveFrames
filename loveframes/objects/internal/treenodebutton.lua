@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- button object
-local newobject = loveframes.NewObject("treenodebutton", "loveframes_object_treenodebutton", true)
+local newobject = loveframes.newObject("treenodebutton", "loveframes_object_treenodebutton", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -20,14 +20,14 @@ function newobject:initialize()
 	self.height = 16
 	self.internal = true
 	
-	self:SetDrawFunc()
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 	
 	local state = loveframes.state
 	local selfstate = self.state
@@ -45,11 +45,11 @@ function newobject:update(dt)
 		end
 	end
 	
-	self:CheckHover()
+	self:checkHover()
 	
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
+	local update = self.update
 	
 	-- move to parent if there is a parent
 	if parent ~= base then
@@ -87,17 +87,17 @@ function newobject:mousepressed(x, y, button)
 	if hover and button == 1 then
 		local bool = not self.parent.open
 		if bool then
-			local onopen = self.parent.OnOpen
+			local onopen = self.parent.onOpen
 			if onopen then
 				onopen(self.parent)
 			end
 		else
-			local onclose = self.parent.OnClose
+			local onclose = self.parent.onClose
 			if onclose then
 				onclose(self.parent)
 			end
 		end
-		self.parent:SetOpen(bool)
+		self.parent:setOpen(bool)
 		print("!")
 		print(self.parent.level)
 	end

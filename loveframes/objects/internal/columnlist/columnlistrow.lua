@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- columnlistrow class
-local newobject = loveframes.NewObject("columnlistrow", "loveframes_object_columnlistrow", true)
+local newobject = loveframes.newObject("columnlistrow", "loveframes_object_columnlistrow", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -33,15 +33,15 @@ function newobject:initialize(parent, data)
 	end
 	
 	-- apply template properties to the object
-	loveframes.ApplyTemplatesToObject(self)
-	self:SetDrawFunc()
+	loveframes.applyTemplatesToObject(self)
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 	
 	if not self.visible then
 		if not self.alwaysupdate then
@@ -50,9 +50,9 @@ function newobject:update(dt)
 	end
 	
 	local parent = self.parent
-	local update = self.Update
+	local update = self.update
 	
-	self:CheckHover()
+	self:checkHover()
 	
 	-- move to parent if there is a parent
 	if parent ~= loveframes.base then
@@ -77,11 +77,11 @@ function newobject:mousepressed(x, y, button)
 	end
 	
 	if self.hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
-		self:GetParent():GetParent():SelectRow(self, loveframes.IsCtrlDown())
+		self:getParent():getParent():selectRow(self, loveframes.IsCtrlDown())
 	end
 
 end
@@ -97,7 +97,7 @@ function newobject:mousereleased(x, y, button)
 	end
 	
 	if self.hover then
-		local parent = self:GetParent():GetParent()
+		local parent = self:getParent():getParent()
 		if button == 1 then
 			local onrowclicked = parent.OnRowClicked
 			if onrowclicked then
@@ -114,10 +114,10 @@ function newobject:mousereleased(x, y, button)
 end
 
 --[[---------------------------------------------------------
-	- func: SetTextPos(x, y)
+	- func: setTextPosition(x, y)
 	- desc: sets the positions of the object's text
 --]]---------------------------------------------------------
-function newobject:SetTextPos(x, y)
+function newobject:setTextPosition(x, y)
 
 	self.textx = x
 	self.texty = y
@@ -125,90 +125,90 @@ function newobject:SetTextPos(x, y)
 end
 
 --[[---------------------------------------------------------
-	- func: GetTextX()
+	- func: getTextX()
 	- desc: gets the object's text x position
 --]]---------------------------------------------------------
-function newobject:GetTextX()
+function newobject:getTextX()
 
 	return self.textx
 
 end
 
 --[[---------------------------------------------------------
-	- func: GetTextY()
+	- func: getTextY()
 	- desc: gets the object's text y position
 --]]---------------------------------------------------------
-function newobject:GetTextY()
+function newobject:getTextY()
 
 	return self.texty
 
 end
 
 --[[---------------------------------------------------------
-	- func: SetFont(font)
+	- func: setFont(font)
 	- desc: sets the object's font
 --]]---------------------------------------------------------
-function newobject:SetFont(font)
+function newobject:setFont(font)
 
 	self.font = font
 
 end
 
 --[[---------------------------------------------------------
-	- func: GetFont()
+	- func: getFont()
 	- desc: gets the object's font
 --]]---------------------------------------------------------
-function newobject:GetFont()
+function newobject:getFont()
 
 	return self.font
 
 end
 
 --[[---------------------------------------------------------
-	- func: GetColorIndex()
+	- func: getColorIndex()
 	- desc: gets the object's color index
 --]]---------------------------------------------------------
-function newobject:GetColorIndex()
+function newobject:getColorIndex()
 
 	return self.colorindex
 
 end
 
 --[[---------------------------------------------------------
-	- func: SetColumnData(data)
+	- func: setColumnData(data)
 	- desc: sets the object's column data
 --]]---------------------------------------------------------
-function newobject:SetColumnData(data)
+function newobject:setColumnData(data)
 
 	self.columndata = data
 	
 end
 
 --[[---------------------------------------------------------
-	- func: GetColumnData()
+	- func: getColumnData()
 	- desc: gets the object's column data
 --]]---------------------------------------------------------
-function newobject:GetColumnData()
+function newobject:getColumnData()
 
 	return self.columndata
 	
 end
 
 --[[---------------------------------------------------------
-	- func: SetSelected(selected)
+	- func: setSelected(selected)
 	- desc: sets whether or not the object is selected
 --]]---------------------------------------------------------
-function newobject:SetSelected(selected)
+function newobject:setSelected(selected)
 
 	self.selected = true
 
 end
 
 --[[---------------------------------------------------------
-	- func: GetSelected()
+	- func: getSelected()
 	- desc: gets whether or not the object is selected
 --]]---------------------------------------------------------
-function newobject:GetSelected()
+function newobject:getSelected()
 
 	return self.selected
 	

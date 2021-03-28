@@ -3,83 +3,83 @@ example.title = "Color Changer"
 example.category = "Example Implementations"
 
 function example.func(loveframes, centerarea)
-	
+
 	local color = {0, 0, 0, 1}
-	
-	local frame = loveframes.Create("frame")
-	frame:SetName("Color Changer")
-	frame:SetSize(500, 255)
-	frame:CenterWithinArea(unpack(centerarea))
-	
-	local colorbox = loveframes.Create("panel", frame)
-	colorbox:SetPos(5, 30)
-	colorbox:SetSize(490, 100)
-	colorbox.Draw = function(object)
+
+	local frame = loveframes.create("frame")
+	frame:setName("Color Changer")
+	frame:setSize(500, 255)
+	frame:centerWithinArea(unpack(centerarea))
+
+	local colorbox = loveframes.create("panel", frame)
+	colorbox:setPosition(5, 30)
+	colorbox:setSize(490, 100)
+	colorbox.draw = function(object)
 		love.graphics.setColor(color)
-		love.graphics.rectangle("fill", object:GetX(), object:GetY(), object:GetWidth(), object:GetHeight())
+		love.graphics.rectangle("fill", object:getX(), object:getY(), object:getWidth(), object:getHeight())
 		love.graphics.setColor(.6, .6, .6, 1)
 		love.graphics.setLineWidth(1)
 		love.graphics.setLineStyle("smooth")
-		love.graphics.rectangle("line", object:GetX(), object:GetY(), object:GetWidth(), object:GetHeight())
+		love.graphics.rectangle("line", object:getX(), object:getY(), object:getWidth(), object:getHeight())
 	end
-	
-	local slider1 = loveframes.Create("slider", frame)
-	slider1:SetPos(5, 150)
-	slider1:SetWidth(490)
-	slider1:SetMax(255)
-	slider1:SetDecimals(0)
-	slider1.OnValueChanged = function(object, value)
+
+	local slider1 = loveframes.create("slider", frame)
+	slider1:setPosition(5, 150)
+	slider1:setWidth(490)
+	slider1:setMax(255)
+	slider1:setDecimals(0)
+	slider1.onValueChanged = function(object, value)
 		color[1] = value / 255
 	end
-	
-	local slider1name = loveframes.Create("text", frame)
-	slider1name:SetPos(5, 135)
-	slider1name:SetText("Red")
-	
-	local slider1value = loveframes.Create("text", frame)
-	slider1value:SetPos(470, 135)
-	slider1value.Update = function(object)
-		object:SetText(slider1:GetValue())
+
+	local slider1name = loveframes.create("text", frame)
+	slider1name:setPosition(5, 135)
+	slider1name:setText("Red")
+
+	local slider1value = loveframes.create("text", frame)
+	slider1value:setPosition(470, 135)
+	slider1value.update = function(object)
+		object:setText(slider1:getValue())
 	end
-	
-	local slider2 = loveframes.Create("slider", frame)
-	slider2:SetPos(5, 190)
-	slider2:SetWidth(490)
-	slider2:SetMax(255)
-	slider2:SetDecimals(0)
-	slider2.OnValueChanged = function(object, value)
+
+	local slider2 = loveframes.create("slider", frame)
+	slider2:setPosition(5, 190)
+	slider2:setWidth(490)
+	slider2:setMax(255)
+	slider2:setDecimals(0)
+	slider2.onValueChanged = function(object, value)
 		color[2] = value / 255
 	end
-	
-	local slider2name = loveframes.Create("text", frame)
-	slider2name:SetPos(5, 175)
-	slider2name:SetText("Green")
-	
-	local slider2value = loveframes.Create("text", frame)
-	slider2value:SetPos(470, 175)
-	slider2value.Update = function(object)
-		object:SetText(slider2:GetValue())
+
+	local slider2name = loveframes.create("text", frame)
+	slider2name:setPosition(5, 175)
+	slider2name:setText("Green")
+
+	local slider2value = loveframes.create("text", frame)
+	slider2value:setPosition(470, 175)
+	slider2value.update = function(object)
+		object:setText(slider2:getValue())
 	end
-	
-	local slider3 = loveframes.Create("slider", frame)
-	slider3:SetPos(5, 230)
-	slider3:SetWidth(490)
-	slider3:SetMax(255)
-	slider3:SetDecimals(0)
-	slider3.OnValueChanged = function(object, value)
+
+	local slider3 = loveframes.create("slider", frame)
+	slider3:setPosition(5, 230)
+	slider3:setWidth(490)
+	slider3:setMax(255)
+	slider3:setDecimals(0)
+	slider3.onValueChanged = function(object, value)
 		color[3] = value / 255
 	end
-	
-	local slider3name = loveframes.Create("text", frame)
-	slider3name:SetPos(5, 215)
-	slider3name:SetText("Blue")
-	
-	local slider3value = loveframes.Create("text", frame)
-	slider3value:SetPos(470, 215)
-	slider3value.Update = function(object)
-		object:SetText(slider3:GetValue())
+
+	local slider3name = loveframes.create("text", frame)
+	slider3name:setPosition(5, 215)
+	slider3name:setText("Blue")
+
+	local slider3value = loveframes.create("text", frame)
+	slider3value:setPosition(470, 215)
+	slider3value.update = function(object)
+		object:setText(slider3:getValue())
 	end
-	
+
 end
 
 return example

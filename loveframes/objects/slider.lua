@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- slider object
-local newobject = loveframes.NewObject("slider", "loveframes_object_slider", true)
+local newobject = loveframes.newObject("slider", "loveframes_object_slider", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -30,56 +30,56 @@ function newobject:initialize()
 	self.enabled = true
 	self.internal = false
 	self.internals = {}
-	self.OnValueChanged	= nil
-	self.OnRelease = nil
-	
+	self.onValueChanged	= nil
+	self.onRelease = nil
+
 	-- create the slider button
 	local sliderbutton = loveframes.objects["sliderbutton"]:new(self)
 	sliderbutton.state = self.state
 	table.insert(self.internals, sliderbutton)
-	
+
 	-- set initial value to minimum
-	self:SetValue(self.min)
-	
-	self:SetDrawFunc()
+	self:setValue(self.min)
+
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
-	
+
 	if not visible then
 		if not alwaysupdate then
 			return
 		end
 	end
-	
+
 	local internals = self.internals
 	local sliderbutton 	= internals[1]
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
-	
-	self:CheckHover()
-	
+	local update = self.update
+
+	self:checkHover()
+
 	-- move to parent if there is a parent
 	if parent ~= base and parent.type ~= "list" then
 		self.x = self.parent.x + self.staticx
 		self.y = self.parent.y + self.staticy
 	end
-	
+
 	if sliderbutton then
 		local slidetype = self.slidetype
 		local buttonwidth = sliderbutton.width
@@ -90,16 +90,16 @@ function newobject:update(dt)
 			self.width = buttonwidth
 		end
 	end
-	
+
 	-- update internals
 	for k, v in ipairs(self.internals) do
-		v:update(dt)
+		v:_update(dt)
 	end
-	
+
 	if update then
 		update(self, dt)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -110,37 +110,37 @@ function newobject:mousepressed(x, y, button)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-		
+
 	local enabled = self.enabled
-	
+
 	if not enabled then
 		return
 	end
-	
+
 	local internals = self.internals
 	local hover = self.hover
 	local slidetype = self.slidetype
 	local scrollable = self.scrollable
-	
+
 	if hover and button == 1 then
 		if slidetype == "horizontal" then
 			local xpos = x - self.x
 			local button = internals[1]
-			local baseparent = self:GetBaseParent()
+			local baseparent = self:getBaseParent()
 			if baseparent and baseparent.type == "frame" then
-				baseparent:MakeTop()
+				baseparent:makeTop()
 			end
-			button:MoveToX(xpos)
+			button:moveToX(xpos)
 			button.down = true
 			button.dragging = true
 			button.startx = button.staticx
@@ -148,11 +148,11 @@ function newobject:mousepressed(x, y, button)
 		elseif slidetype == "vertical" then
 			local ypos = y - self.y
 			local button = internals[1]
-			local baseparent = self:GetBaseParent()
+			local baseparent = self:getBaseParent()
 			if baseparent and baseparent.type == "frame" then
-				baseparent:MakeTop()
+				baseparent:makeTop()
 			end
-			button:MoveToY(ypos)
+			button:moveToY(ypos)
 			button.down = true
 			button.dragging = true
 			button.starty = button.staticy
@@ -162,42 +162,42 @@ function newobject:mousepressed(x, y, button)
 		local value = self.value
 		local increase = self.scrollincrease
 		local newvalue = value + increase
-		self:SetValue(newvalue)
+		self:setValue(newvalue)
 	elseif hover and scrollable and button == "wd" then
 		local value = self.value
 		local decrease = self.scrolldecrease
 		local newvalue = value - decrease
-		self:SetValue(newvalue)
+		self:setValue(newvalue)
 	end
-	
+
 	for k, v in ipairs(internals) do
 		v:mousepressed(x, y, button)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetValue(value)
+	- func: setValue(value)
 	- desc: sets the object's value
 --]]---------------------------------------------------------
-function newobject:SetValue(value)
+function newobject:setValue(value)
 
 	if value > self.max then
 		return
 	end
-	
+
 	if value < self.min then
 		return
 	end
-	
+
 	local decimals = self.decimals
-	local newval = loveframes.Round(value, decimals)
+	local newval = loveframes.round(value, decimals)
 	local internals = self.internals
-	local onvaluechanged = self.OnValueChanged
-	
+	local onvaluechanged = self.onValueChanged
+
 	-- set the new value
 	self.value = newval
-	
+
 	-- slider button object
 	local sliderbutton = internals[1]
 	local slidetype = self.slidetype
@@ -205,309 +205,309 @@ function newobject:SetValue(value)
 	local height = self.height
 	local min = self.min
 	local max = self.max
-	
+
 	-- move the slider button to the new position
 	if slidetype == "horizontal" then
 		local xpos = width * ((newval - min) / (max - min))
-		sliderbutton:MoveToX(xpos)
+		sliderbutton:moveToX(xpos)
 	elseif slidetype == "vertical" then
 		local ypos = height - height * ((newval - min) / (max - min))
-		sliderbutton:MoveToY(ypos)
+		sliderbutton:moveToY(ypos)
 	end
-	
-	-- call OnValueChanged
+
+	-- call onValueChanged
 	if onvaluechanged then
 		onvaluechanged(self, newval)
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetValue()
+	- func: getValue()
 	- desc: gets the object's value
 --]]---------------------------------------------------------
-function newobject:GetValue()
+function newobject:getValue()
 
 	return self.value
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMax(max)
+	- func: setMax(max)
 	- desc: sets the object's maximum value
 --]]---------------------------------------------------------
-function newobject:SetMax(max)
+function newobject:setMax(max)
 
 	self.max = max
-	
+
 	if self.value > self.max then
 		self.value = self.max
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMax()
+	- func: getMax()
 	- desc: gets the object's maximum value
 --]]---------------------------------------------------------
-function newobject:GetMax()
+function newobject:getMax()
 
 	return self.max
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMin(min)
+	- func: setMin(min)
 	- desc: sets the object's minimum value
 --]]---------------------------------------------------------
-function newobject:SetMin(min)
+function newobject:setMin(min)
 
 	self.min = min
-	
+
 	if self.value < self.min then
 		self.value = self.min
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMin()
+	- func: getMin()
 	- desc: gets the object's minimum value
 --]]---------------------------------------------------------
-function newobject:GetMin()
+function newobject:getMin()
 
 	return self.min
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMinMax()
+	- func: setMinMax()
 	- desc: sets the object's minimum and maximum values
 --]]---------------------------------------------------------
-function newobject:SetMinMax(min, max)
+function newobject:setMinMax(min, max)
 
 	self.min = min
 	self.max = max
-	
+
 	if self.value > self.max then
 		self.value = self.max
 	end
-	
+
 	if self.value < self.min then
 		self.value = self.min
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMinMax()
+	- func: getMinMax()
 	- desc: gets the object's minimum and maximum values
 --]]---------------------------------------------------------
-function newobject:GetMinMax()
+function newobject:getMinMax()
 
 	return self.min, self.max
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetText(name)
+	- func: setText(name)
 	- desc: sets the objects's text
 --]]---------------------------------------------------------
-function newobject:SetText(text)
+function newobject:setText(text)
 
 	self.text = text
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetText()
+	- func: getText()
 	- desc: gets the objects's text
 --]]---------------------------------------------------------
-function newobject:GetText()
+function newobject:getText()
 
 	return self.text
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetDecimals(decimals)
-	- desc: sets how many decimals the object's value 
+	- func: setDecimals(decimals)
+	- desc: sets how many decimals the object's value
 			can have
 --]]---------------------------------------------------------
-function newobject:SetDecimals(decimals)
+function newobject:setDecimals(decimals)
 
 	self.decimals = decimals
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetDecimals()
-	- desc: gets how many decimals the object's value 
+	- func: getDecimals()
+	- desc: gets how many decimals the object's value
 			can have
 --]]---------------------------------------------------------
-function newobject:GetDecimals()
+function newobject:getDecimals()
 
 	return self.decimals
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetButtonSize(width, height)
+	- func: setButtonSize(width, height)
 	- desc: sets the objects's button size
 --]]---------------------------------------------------------
-function newobject:SetButtonSize(width, height)
-	
+function newobject:setButtonSize(width, height)
+
 	local internals = self.internals
 	local sliderbutton = internals[1]
-	
+
 	if sliderbutton then
 		sliderbutton.width = width
 		sliderbutton.height = height
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetButtonSize()
+	- func: getButtonSize()
 	- desc: gets the objects's button size
 --]]---------------------------------------------------------
-function newobject:GetButtonSize()
+function newobject:getButtonSize()
 
 	local internals = self.internals
 	local sliderbutton = internals[1]
-	
+
 	if sliderbutton then
 		return sliderbutton.width, sliderbutton.height
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetSlideType(slidetype)
+	- func: setSlideType(slidetype)
 	- desc: sets the objects's slide type
 --]]---------------------------------------------------------
-function newobject:SetSlideType(slidetype)
+function newobject:setSlideType(slidetype)
 
 	self.slidetype = slidetype
-	
+
 	if slidetype == "vertical" then
-		self:SetValue(self.min)
+		self:setValue(self.min)
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetSlideType()
+	- func: getSlideType()
 	- desc: gets the objects's slide type
 --]]---------------------------------------------------------
-function newobject:GetSlideType()
+function newobject:getSlideType()
 
 	return self.slidetype
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetScrollable(bool)
+	- func: setScrollable(bool)
 	- desc: sets whether or not the object can be scrolled
 			via the mouse wheel
 --]]---------------------------------------------------------
-function newobject:SetScrollable(bool)
+function newobject:setScrollable(bool)
 
 	self.scrollable = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetScrollable()
+	- func: getScrollable()
 	- desc: gets whether or not the object can be scrolled
 			via the mouse wheel
 --]]---------------------------------------------------------
-function newobject:GetScrollable()
+function newobject:getScrollable()
 
 	return self.scrollable
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetScrollIncrease(increase)
+	- func: setScrollIncrease(increase)
 	- desc: sets the amount to increase the object's value
 			by when scrolling with the mouse wheel
 --]]---------------------------------------------------------
-function newobject:SetScrollIncrease(increase)
+function newobject:setScrollIncrease(increase)
 
 	self.scrollincrease = increase
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetScrollIncrease()
+	- func: getScrollIncrease()
 	- desc: gets the amount to increase the object's value
 			by when scrolling with the mouse wheel
 --]]---------------------------------------------------------
-function newobject:GetScrollIncrease()
+function newobject:getScrollIncrease()
 
 	return self.scrollincrease
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetScrollDecrease(decrease)
+	- func: setScrollDecrease(decrease)
 	- desc: sets the amount to decrease the object's value
 			by when scrolling with the mouse wheel
 --]]---------------------------------------------------------
-function newobject:SetScrollDecrease(decrease)
+function newobject:setScrollDecrease(decrease)
 
 	self.scrolldecrease = decrease
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetScrollDecrease()
+	- func: getScrollDecrease()
 	- desc: gets the amount to decrease the object's value
 			by when scrolling with the mouse wheel
 --]]---------------------------------------------------------
-function newobject:GetScrollDecrease()
+function newobject:getScrollDecrease()
 
 	return self.scrolldecrease
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetEnabled(bool)
+	- func: setEnabled(bool)
 	- desc: sets whether or not the object is enabled
 --]]---------------------------------------------------------
-function newobject:SetEnabled(bool)
+function newobject:setEnabled(bool)
 
 	self.enabled = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetEnabled()
+	- func: getEnabled()
 	- desc: gets whether or not the object is enabled
 --]]---------------------------------------------------------
-function newobject:GetEnabled()
+function newobject:getEnabled()
 
 	return self.enabled
-	
+
 end
 
 ---------- module end ----------

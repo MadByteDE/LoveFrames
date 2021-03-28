@@ -10,59 +10,59 @@ loveframes.objects = {}
 
 
 --[[---------------------------------------------------------
-	- func: Create(type, parent)
+	- func: create(type, parent)
 	- desc: creates a new object or multiple new objects
 			(based on the method used) and returns said
 			object or objects for further manipulation
 --]]---------------------------------------------------------
-function loveframes.Create(data, parent)
-	
+function loveframes.create(data, parent)
+
 	if type(data) == "string" then
-	
+
 		local objects = loveframes.objects
 		local object = objects[data]
 		local objectcount = loveframes.objectcount
-		
+
 		if not object then
-			loveframes.Error("Error creating object: Invalid object '" ..data.. "'.")
+			loveframes.error("error creating object: Invalid object '" ..data.. "'.")
 		end
-		
+
 		-- create the object
 		local newobject = object:new()
-		
+
 		-- apply template properties to the object
-		loveframes.ApplyTemplatesToObject(newobject)
-		
+		loveframes.applyTemplatesToObject(newobject)
+
 		-- if the object is a tooltip, return it and go no further
 		if data == "tooltip" then
 			return newobject
 		end
-		
+
 		-- remove the object if it is an internal
 		if newobject.internal then
-			newobject:Remove()
+			newobject:remove()
 			return
 		end
-		
+
 		-- parent the new object by default to the base gui object
 		newobject.parent = loveframes.base
 		table.insert(loveframes.base.children, newobject)
-		
+
 		-- if the parent argument is not nil, make that argument the object's new parent
 		if parent then
-			newobject:SetParent(parent)
+			newobject:setParent(parent)
 		end
-		
+
 		loveframes.objectcount = objectcount + 1
-		
+
 		-- return the object for further manipulation
 		return newobject
-		
+
 	elseif type(data) == "table" then
 
 		-- table for creation of multiple objects
 		local objects = {}
-		
+
 		-- this function reads a table that contains a layout of object properties and then
 		-- creates objects based on those properties
 		local function CreateObjects(t, o, c)
@@ -77,7 +77,7 @@ function loveframes.Create(data, parent)
 				object.parent = loveframes.base
 				table.insert(loveframes.base.children, object)
 				if o then
-					object:SetParent(o)
+					object:setParent(o)
 				end
 				-- loop through the current layout table and assign the properties found
 				-- to the current object
@@ -103,25 +103,25 @@ function loveframes.Create(data, parent)
 				end
 			end
 		end
-		
+
 		-- create the objects
 		CreateObjects(data)
-		
+
 		return objects
-		
+
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: NewObject(id, name, inherit_from_base)
+	- func: newObject(id, name, inherit_from_base)
 	- desc: creates a new object
 --]]---------------------------------------------------------
-function loveframes.NewObject(id, name, inherit_from_base)
-	
+function loveframes.newObject(id, name, inherit_from_base)
+
 	local objects = loveframes.objects
 	local object = false
-	
+
 	if inherit_from_base then
 		local base = objects["base"]
 		object = loveframes.class(name, base)
@@ -130,13 +130,13 @@ function loveframes.NewObject(id, name, inherit_from_base)
 		object = loveframes.class(name)
 		objects[id] = object
 	end
-	
+
 	return object
-	
+
 end
 
-function loveframes.LoadObjects(dir)
-	local objectlist = loveframes.GetDirectoryContents(dir)
+function loveframes.loadObjects(dir)
+	local objectlist = loveframes.getDirectoryContents(dir)
 	-- loop through a list of all gui objects and require them
 	for k, v in ipairs(objectlist) do
 		if v.extension == "lua" then

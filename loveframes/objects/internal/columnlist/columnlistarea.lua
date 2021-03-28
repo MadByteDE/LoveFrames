@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- columnlistarea class
-local newobject = loveframes.NewObject("columnlistarea", "loveframes_object_columnlistarea", true)
+local newobject = loveframes.newObject("columnlistarea", "loveframes_object_columnlistarea", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -38,15 +38,15 @@ function newobject:initialize(parent)
 	self.children = {}
 
 	-- apply template properties to the object
-	loveframes.ApplyTemplatesToObject(self)
-	self:SetDrawFunc()
+	loveframes.applyTemplatesToObject(self)
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 	
 	if not self.visible then
 		if not self.alwaysupdate then
@@ -54,12 +54,12 @@ function newobject:update(dt)
 		end
 	end
 	
-	local cwidth, cheight = self.parent:GetColumnSize()
+	local cwidth, cheight = self.parent:getColumnSize()
 	local parent = self.parent
-	local update = self.Update
+	local update = self.update
 	local internals = self.internals
 	
-	self:CheckHover()
+	self:checkHover()
 	
 	-- move to parent if there is a parent
 	if parent ~= loveframes.base then
@@ -68,17 +68,17 @@ function newobject:update(dt)
 	end
 	
 	for k, v in ipairs(self.children) do
-		local col = loveframes.BoundingBox(self.x, v.x, self.y, v.y, self.width, v.width, self.height, v.height)
+		local col = loveframes.boundingBox(self.x, v.x, self.y, v.y, self.width, v.width, self.height, v.height)
 		if col then
-			v:update(dt)
+			v:_update(dt)
 		end
-		v:SetClickBounds(self.x, self.y, self.width, self.height)
+		v:setClickBounds(self.x, self.y, self.width, self.height)
 		v.y = (v.parent.y + v.staticy) - self.offsety + cheight
 		v.x = (v.parent.x + v.staticx) - self.offsetx
 	end
 	
 	for k, v in ipairs(self.internals) do
-		v:update(dt)
+		v:_update(dt)
 	end
 	
 	if update then
@@ -91,7 +91,7 @@ end
 	- func: draw()
 	- desc: draws the object
 --]]---------------------------------------------------------
-function newobject:draw()
+function newobject:_draw()
 	if loveframes.state ~= self.state then
 		return
 	end
@@ -108,18 +108,18 @@ function newobject:draw()
 	local sheight = height
 	
 	if self.vbar then
-		swidth = swidth - self:GetVerticalScrollBody():GetWidth()
+		swidth = swidth - self:getVerticalScrollBody():getWidth()
 	end
 	
 	if self.hbar then
-		sheight = sheight - self:GetHorizontalScrollBody():GetHeight()
+		sheight = sheight - self:getHorizontalScrollBody():getHeight()
 	end
 	
 	local stencilfunc = function() love.graphics.rectangle("fill", x, y, swidth, sheight) end
 	
-	self:SetDrawOrder()
+	self:setDrawOrder()
 	
-	local drawfunc = self.Draw or self.drawfunc
+	local drawfunc = self.draw or self.drawfunc
 	if drawfunc then
 		drawfunc(self)
 	end
@@ -130,16 +130,16 @@ function newobject:draw()
 	local children = self.children
 	if children then
 		for k, v in ipairs(self.children) do
-			local col = loveframes.BoundingBox(self.x, v.x, self.y, v.y, width, v.width, height, v.height)
+			local col = loveframes.boundingBox(self.x, v.x, self.y, v.y, width, v.width, height, v.height)
 			if col then
-				v:draw()
+				v:_draw()
 			end
 		end
 	end
 	
 	love.graphics.setStencilTest()
 	
-	drawfunc = self.DrawOver or self.drawoverfunc
+	drawfunc = self.drawOver or self.drawoverfunc
 	if drawfunc then
 		drawfunc(self)
 	end
@@ -147,7 +147,7 @@ function newobject:draw()
 	local internals = self.internals
 	if internals then
 		for k, v in ipairs(self.internals) do
-			v:draw()
+			v:_draw()
 		end
 	end
 end
@@ -161,9 +161,9 @@ function newobject:mousepressed(x, y, button)
 	local scrollamount = self.mousewheelscrollamount
 	
 	if self.hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 	end
 	
@@ -207,37 +207,37 @@ function newobject:wheelmoved(x, y)
 	-- FIXME: button is nil
 	-- if self.hover and button == 1 then
 	if self.hover then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 	end
 
 	local bar = false
 	if self.vbar and self.hbar then
-		bar = self:GetVerticalScrollBody():GetScrollBar()
+		bar = self:getVerticalScrollBody():getScrollBar()
 	elseif self.vbar and not self.hbar then
-		bar = self:GetVerticalScrollBody():GetScrollBar()
+		bar = self:getVerticalScrollBody():getScrollBar()
 	elseif not self.vbar and self.hbar then
-		bar = self:GetHorizontalScrollBody():GetScrollBar()
+		bar = self:getHorizontalScrollBody():getScrollBar()
 	end
 
-	if self:IsTopList() and bar then
+	if self:isTopList() and bar then
 		if self.dtscrolling then
 			local dt = love.timer.getDelta()
-			bar:Scroll(-y * scrollamount * dt)
+			bar:scroll(-y * scrollamount * dt)
 		else
-			bar:Scroll(-y * scrollamount)
+			bar:scroll(-y * scrollamount)
 		end
 	end
 
 end
 
 --[[---------------------------------------------------------
-	- func: CalculateSize()
+	- func: calculateSize()
 	- desc: calculates the size of the object's children
 --]]---------------------------------------------------------
-function newobject:CalculateSize()
+function newobject:calculateSize()
 	
 	local height = self.height
 	local width = self.width
@@ -249,10 +249,10 @@ function newobject:CalculateSize()
 	end
 	
 	self.itemheight = itemheight
-	self.itemwidth = parent:GetTotalColumnWidth()
+	self.itemwidth = parent:getTotalColumnWidth()
 	
 	local hbarheight = 0
-	local hbody = self:GetHorizontalScrollBody()
+	local hbody = self:getHorizontalScrollBody()
 	if hbody then
 		hbarheight = hbody.height
 	end
@@ -266,20 +266,20 @@ function newobject:CalculateSize()
 			local newbar = loveframes.objects["scrollbody"]:new(self, "vertical")
 			table.insert(self.internals, newbar)
 			self.vbar = true
-			newbar:GetScrollBar().autoscroll = parent.autoscroll
+			newbar:getScrollBar().autoscroll = parent.autoscroll
 			self.itemwidth = self.itemwidth + newbar.width
 			self.extrawidth = self.itemwidth - width
 		end
 	else
 		if self.vbar then
-			self:GetVerticalScrollBody():Remove()
+			self:getVerticalScrollBody():remove()
 			self.vbar = false
 			self.offsety = 0
 		end
 	end
 	
 	local vbarwidth = 0
-	local vbody = self:GetVerticalScrollBody()
+	local vbody = self:getVerticalScrollBody()
 	if vbody then
 		vbarwidth = vbody.width
 	end
@@ -298,8 +298,8 @@ function newobject:CalculateSize()
 		end
 	else
 		if self.hbar then
-			local hbar = self:GetHorizontalScrollBody()
-			hbar:Remove()
+			local hbar = self:getHorizontalScrollBody()
+			hbar:remove()
 			self.itemheight = self.itemheight - hbar.height
 			self.extraheight = self.itemheight - height
 			self.hbar = false
@@ -310,32 +310,32 @@ function newobject:CalculateSize()
 end
 
 --[[---------------------------------------------------------
-	- func: RedoLayout()
+	- func: redoLayout()
 	- desc: used to redo the layour of the object
 --]]---------------------------------------------------------
-function newobject:RedoLayout()
+function newobject:redoLayout()
 	
 	local starty = 0
 	self.rowcolorindex = 1
 	
 	for k, v in ipairs(self.children) do
-		v:SetWidth(self.parent:GetTotalColumnWidth())
+		v:setWidth(self.parent:getTotalColumnWidth())
 		v.staticx = 0
 		v.staticy = starty
 		if self.vbar then
-			local vbody = self:GetVerticalScrollBody()
+			local vbody = self:getVerticalScrollBody()
 			vbody.staticx = self.width - vbody.width
 			if self.hbar then
-				vbody.height = self.height - self:GetHorizontalScrollBody().height
+				vbody.height = self.height - self:getHorizontalScrollBody().height
 			else
 				vbody.height = self.height
 			end
 		end
 		if self.hbar then
-			local hbody = self:GetHorizontalScrollBody()
+			local hbody = self:getHorizontalScrollBody()
 			hbody.staticy = self.height - hbody.height
 			if self.vbar then
-				hbody.width = self.width - self:GetVerticalScrollBody().width
+				hbody.width = self.width - self:getVerticalScrollBody().width
 			else
 				hbody.width = self.width
 			end
@@ -353,10 +353,10 @@ function newobject:RedoLayout()
 end
 
 --[[---------------------------------------------------------
-	- func: AddRow(data)
+	- func: addRow(data)
 	- desc: adds a row to the object
 --]]---------------------------------------------------------
-function newobject:AddRow(data)
+function newobject:addRow(data)
 
 	local colorindex = self.rowcolorindex
 	
@@ -367,17 +367,17 @@ function newobject:AddRow(data)
 	end
 	
 	table.insert(self.children, loveframes.objects["columnlistrow"]:new(self, data))
-	self:CalculateSize()
-	self:RedoLayout()
-	self.parent:PositionColumns()
+	self:calculateSize()
+	self:redoLayout()
+	self.parent:positionColumns()
 	
 end
 
 --[[---------------------------------------------------------
-	- func: GetScrollBar()
+	- func: getScrollBar()
 	- desc: gets the object's scroll bar
 --]]---------------------------------------------------------
-function newobject:GetScrollBar()
+function newobject:getScrollBar()
 	
 	if self.bar then
 		return self.internals[1].internals[1].internals[1]
@@ -388,10 +388,10 @@ function newobject:GetScrollBar()
 end
 
 --[[---------------------------------------------------------
-	- func: Sort()
+	- func: sort()
 	- desc: sorts the object's children
 --]]---------------------------------------------------------
-function newobject:Sort(column, desc)
+function newobject:sort(column, desc)
 	
 	local children = self.children
 	self.rowcolorindex = 1
@@ -414,30 +414,30 @@ function newobject:Sort(column, desc)
 		end
 	end
 	
-	self:CalculateSize()
-	self:RedoLayout()
+	self:calculateSize()
+	self:redoLayout()
 	
 end
 
 --[[---------------------------------------------------------
-	- func: Clear()
+	- func: clear()
 	- desc: removes all items from the object's list
 --]]---------------------------------------------------------
-function newobject:Clear()
+function newobject:clear()
 
 	self.children = {}
-	self:CalculateSize()
-	self:RedoLayout()
-	self.parent:PositionColumns()
+	self:calculateSize()
+	self:redoLayout()
+	self.parent:positionColumns()
 	self.rowcolorindex = 1
 	
 end
 
 --[[---------------------------------------------------------
-	- func: GetVerticalScrollBody()
+	- func: getVerticalScrollBody()
 	- desc: gets the object's vertical scroll body
 --]]---------------------------------------------------------
-function newobject:GetVerticalScrollBody()
+function newobject:getVerticalScrollBody()
 
 	for k, v in ipairs(self.internals) do
 		if v.bartype == "vertical" then
@@ -450,10 +450,10 @@ function newobject:GetVerticalScrollBody()
 end
 
 --[[---------------------------------------------------------
-	- func: GetHorizontalScrollBody()
+	- func: getHorizontalScrollBody()
 	- desc: gets the object's horizontal scroll body
 --]]---------------------------------------------------------
-function newobject:GetHorizontalScrollBody()
+function newobject:getHorizontalScrollBody()
 
 	for k, v in ipairs(self.internals) do
 		if v.bartype == "horizontal" then

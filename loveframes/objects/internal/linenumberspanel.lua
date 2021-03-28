@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- linenumberspanel class
-local newobject = loveframes.NewObject("linenumberspanel", "loveframes_object_linenumberspanel", true)
+local newobject = loveframes.newObject("linenumberspanel", "loveframes_object_linenumberspanel", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -25,15 +25,15 @@ function newobject:initialize(parent)
 	self.internal = true
 	
 	-- apply template properties to the object
-	loveframes.ApplyTemplatesToObject(self)
-	self:SetDrawFunc()
+	loveframes.applyTemplatesToObject(self)
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the element
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 	
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
@@ -46,7 +46,7 @@ function newobject:update(dt)
 	
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
+	local update = self.update
 	local height = self.parent.height
 	local parentinternals = parent.internals
 	
@@ -60,12 +60,12 @@ function newobject:update(dt)
 	end
 	
 	if parentinternals[1] ~= self then
-		self:Remove()
+		self:remove()
 		table.insert(parentinternals, 1, self)
 		return
 	end
 	
-	self:CheckHover()
+	self:checkHover()
 	
 	if update then
 		update(self, dt)
@@ -77,7 +77,7 @@ end
 	- func: draw()
 	- desc: draws the object
 --]]---------------------------------------------------------
-function newobject:draw()
+function newobject:_draw()
 	if loveframes.state ~= self.state then
 		return
 	end
@@ -96,12 +96,12 @@ function newobject:draw()
 		stencilfunc = function() love.graphics.rectangle("fill", self.parent.x, self.parent.y, self.width, self.parent.height - 16) end
 	end
 	
-	self:SetDrawOrder()
+	self:setDrawOrder()
 	
 	love.graphics.stencil(stencilfunc)
 	love.graphics.setStencilTest("greater", 0)
 	
-	local drawfunc = self.Draw or self.drawfunc
+	local drawfunc = self.draw or self.drawfunc
 	if drawfunc then
 		drawfunc(self)
 	end
@@ -125,9 +125,9 @@ function newobject:mousepressed(x, y, button)
 	local hover = self.hover
 	
 	if hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 	end
 	
@@ -148,10 +148,10 @@ function newobject:mousereleased(x, y, button)
 end
 
 --[[---------------------------------------------------------
-	- func: GetOffsetY()
+	- func: getOffsetY()
 	- desc: gets the object's y offset
 --]]---------------------------------------------------------
-function newobject:GetOffsetY()
+function newobject:getOffsetY()
 
 	return self.offsety
 	

@@ -7,14 +7,14 @@ return function(loveframes)
 ---------- module start ----------
 
 -- button object
-local newobject = loveframes.NewObject("button", "loveframes_object_button", true)
+local newobject = loveframes.newObject("button", "loveframes_object_button", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
 	- desc: initializes the object
 --]]---------------------------------------------------------
 function newobject:initialize()
-	
+
 	self.type = "button"
 	self.text = "Button"
 	self.width = 80
@@ -25,44 +25,44 @@ function newobject:initialize()
 	self.enabled = true
 	self.toggleable = false
 	self.toggle = false
-	self.OnClick = nil
+	self.onClick = nil
 	self.groupIndex = 0
 	self.checked = false
-	
-	self:SetDrawFunc()
+
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
-	
+function newobject:_update(dt)
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
-	
+
 	if not visible then
 		if not alwaysupdate then
 			return
 		end
 	end
-	
-	self:CheckHover()
-	
+
+	self:checkHover()
+
 	local hover = self.hover
 	local down = self.down
 	local downobject = loveframes.downobject
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
-	
+	local update = self.update
+
 	if not hover then
 		self.down = false
 		if downobject == self then
@@ -73,13 +73,13 @@ function newobject:update(dt)
 			self.down = true
 		end
 	end
-	
+
 	-- move to parent if there is a parent
 	if parent ~= base then
 		self.x = self.parent.x + self.staticx
 		self.y = self.parent.y + self.staticy
 	end
-	
+
 	if update then
 		update(self, dt)
 	end
@@ -94,28 +94,28 @@ function newobject:mousepressed(x, y, button)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local hover = self.hover
-	
+
 	if hover and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 		self.down = true
 		loveframes.downobject = self
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -123,26 +123,26 @@ end
 	- desc: called when the player releases a mouse button
 --]]---------------------------------------------------------
 function newobject:mousereleased(x, y, button)
-	
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local hover = self.hover
 	local down = self.down
 	local clickable = self.clickable
 	local enabled = self.enabled
-	local onclick = self.OnClick
-	
+	local onclick = self.onClick
+
 	if hover and down and clickable and button == 1 then
 		if enabled then
 			if self.groupIndex ~= 0 then
@@ -170,58 +170,58 @@ function newobject:mousereleased(x, y, button)
 			end
 		end
 	end
-	
+
 	self.down = false
 
 end
 
 --[[---------------------------------------------------------
-	- func: SetText(text)
+	- func: setText(text)
 	- desc: sets the object's text
 --]]---------------------------------------------------------
-function newobject:SetText(text)
+function newobject:setText(text)
 
 	self.text = text
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetText()
+	- func: getText()
 	- desc: gets the object's text
 --]]---------------------------------------------------------
-function newobject:GetText()
+function newobject:getText()
 
 	return self.text
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetFont(font)
+	- func: setFont(font)
 	- desc: sets the object's font, nil uses the skin's default
 --]]---------------------------------------------------------
-function newobject:SetFont(font)
+function newobject:setFont(font)
 
 	self.font = font
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetFont()
+	- func: getFont()
 	- desc: gets the object's font
 --]]---------------------------------------------------------
-function newobject:GetFont()
+function newobject:getFont()
 
 	return self.font
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetImage(image)
+	- func: setImage(image)
 	- desc: adds an image to the object
 --]]---------------------------------------------------------
-function newobject:SetImage(image)
+function newobject:setImage(image)
 
 	if type(image) == "string" then
 		self.image = love.graphics.newImage(image)
@@ -232,73 +232,73 @@ function newobject:SetImage(image)
 end
 
 --[[---------------------------------------------------------
-	- func: GetImage()
+	- func: getImage()
 	- desc: gets the object's image
 --]]---------------------------------------------------------
-function newobject:GetImage()
+function newobject:getImage()
 
 	return self.image
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetClickable(bool)
+	- func: setClickable(bool)
 	- desc: sets whether the object can be clicked or not
 --]]---------------------------------------------------------
-function newobject:SetClickable(bool)
+function newobject:setClickable(bool)
 
 	self.clickable = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetClickable(bool)
+	- func: getClickable(bool)
 	- desc: gets whether the object can be clicked or not
 --]]---------------------------------------------------------
-function newobject:GetClickable()
+function newobject:getClickable()
 
 	return self.clickable
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetClickable(bool)
+	- func: setClickable(bool)
 	- desc: sets whether or not the object is enabled
 --]]---------------------------------------------------------
-function newobject:SetEnabled(bool)
+function newobject:setEnabled(bool)
 
 	self.enabled = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetEnabled()
+	- func: getEnabled()
 	- desc: gets whether or not the object is enabled
 --]]---------------------------------------------------------
-function newobject:GetEnabled()
+function newobject:getEnabled()
 
 	return self.enabled
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetDown()
+	- func: getDown()
 	- desc: gets whether or not the object is currently
 	        being pressed
 --]]---------------------------------------------------------
-function newobject:GetDown()
+function newobject:getDown()
 
 	return self.down
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetToggleable(bool)
+	- func: setToggleable(bool)
 	- desc: sets whether or not the object is toggleable
 --]]---------------------------------------------------------
-function newobject:SetToggleable(bool)
+function newobject:setToggleable(bool)
 
 	self.toggleable = bool
 	return self
@@ -306,10 +306,10 @@ function newobject:SetToggleable(bool)
 end
 
 --[[---------------------------------------------------------
-	- func: GetToggleable()
+	- func: getToggleable()
 	- desc: gets whether or not the object is toggleable
 --]]---------------------------------------------------------
-function newobject:GetToggleable()
+function newobject:getToggleable()
 
 	return self.toggleable
 

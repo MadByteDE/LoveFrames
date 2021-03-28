@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- multichoice object
-local newobject = loveframes.NewObject("multichoice", "loveframes_object_multichoice", true)
+local newobject = loveframes.newObject("multichoice", "loveframes_object_multichoice", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -31,48 +31,48 @@ function newobject:initialize()
 	self.internal = false
 	self.choices = {}
 	self.listheight = nil
-	
-	self:SetDrawFunc()
+
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
-	
+
 	if not visible then
 		if not alwaysupdate then
 			return
 		end
 	end
-	
+
 	local parent = self.parent
 	local base = loveframes.base
-	local update = self.Update
-	
-	self:CheckHover()
-	
+	local update = self.update
+
+	self:checkHover()
+
 	-- move to parent if there is a parent
 	if parent ~= base then
 		self.x = self.parent.x + self.staticx
 		self.y = self.parent.y + self.staticy
 	end
-	
+
 	if update then
 		update(self, dt)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -80,32 +80,32 @@ end
 	- desc: called when the player presses a mouse button
 --]]---------------------------------------------------------
 function newobject:mousepressed(x, y, button)
-	
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local hover = self.hover
 	local haslist = self.haslist
 	local enabled = self.enabled
-	
+
 	if hover and not haslist and enabled and button == 1 then
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 		self.haslist = true
 		self.list = loveframes.objects["multichoicelist"]:new(self)
-		self.list:SetState(self.state)
+		self.list:setState(self.state)
 		loveframes.downobject = self
 	end
 
@@ -116,16 +116,16 @@ end
 	- desc: called when the player releases a mouse button
 --]]---------------------------------------------------------
 function newobject:mousereleased(x, y, button)
-	
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
@@ -133,285 +133,285 @@ function newobject:mousereleased(x, y, button)
 end
 
 --[[---------------------------------------------------------
-	- func: AddChoice(choice)
+	- func: addChoice(choice)
 	- desc: adds a choice to the current list of choices
 --]]---------------------------------------------------------
-function newobject:AddChoice(choice)
+function newobject:addChoice(choice)
 
 	local choices = self.choices
 	table.insert(choices, choice)
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: RemoveChoice(choice)
-	- desc: removes the specified choice from the object's 
+	- func: removeChoice(choice)
+	- desc: removes the specified choice from the object's
 			list of choices
 --]]---------------------------------------------------------
-function newobject:RemoveChoice(choice)
-	
+function newobject:removeChoice(choice)
+
 	local choices = self.choices
-	
+
 	for k, v in ipairs(choices) do
 		if v == choice then
 			table.remove(choices, k)
 			break
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetChoice(choice)
+	- func: setChoice(choice)
 	- desc: sets the current choice
 --]]---------------------------------------------------------
-function newobject:SetChoice(choice)
+function newobject:setChoice(choice)
 
 	self.choice = choice
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SelectChoice(choice)
+	- func: selectChoice(choice)
 	- desc: selects a choice
 --]]---------------------------------------------------------
-function newobject:SelectChoice(choice)
+function newobject:selectChoice(choice)
 
-	local onchoiceselected = self.OnChoiceSelected
-	
+	local onChoiceSelected = self.onChoiceSelected
+
 	self.choice = choice
-	
+
 	if self.list then
-		self.list:Close()
+		self.list:close()
 	end
-	
-	if onchoiceselected then
-		onchoiceselected(self, choice)
+
+	if onChoiceSelected then
+		onChoiceSelected(self, choice)
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetListHeight(height)
+	- func: setListHeight(height)
 	- desc: sets the height of the list of choices
 --]]---------------------------------------------------------
-function newobject:SetListHeight(height)
+function newobject:setListHeight(height)
 
 	self.listheight = height
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetPadding(padding)
+	- func: setPadding(padding)
 	- desc: sets the padding of the list of choices
 --]]---------------------------------------------------------
-function newobject:SetPadding(padding)
+function newobject:setPadding(padding)
 
 	self.listpadding = padding
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetSpacing(spacing)
+	- func: setSpacing(spacing)
 	- desc: sets the spacing of the list of choices
 --]]---------------------------------------------------------
-function newobject:SetSpacing(spacing)
+function newobject:setSpacing(spacing)
 
 	self.listspacing = spacing
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetValue()
+	- func: getValue()
 	- desc: gets the value (choice) of the object
 --]]---------------------------------------------------------
-function newobject:GetValue()
+function newobject:getValue()
 
 	return self.choice
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetChoice()
+	- func: getChoice()
 	- desc: gets the current choice (same as get value)
 --]]---------------------------------------------------------
-function newobject:GetChoice()
+function newobject:getChoice()
 
 	return self.choice
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetText(text)
+	- func: setText(text)
 	- desc: sets the object's text
 --]]---------------------------------------------------------
-function newobject:SetText(text)
+function newobject:setText(text)
 
 	self.text = text
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetText()
+	- func: getText()
 	- desc: gets the object's text
 --]]---------------------------------------------------------
-function newobject:GetText()
+function newobject:getText()
 
 	return self.text
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetButtonScrollAmount(speed)
+	- func: setButtonScrollAmount(speed)
 	- desc: sets the scroll amount of the object's scrollbar
 			buttons
 --]]---------------------------------------------------------
-function newobject:SetButtonScrollAmount(amount)
+function newobject:setButtonScrollAmount(amount)
 
 	self.buttonscrollamount = amount
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetButtonScrollAmount()
+	- func: getButtonScrollAmount()
 	- desc: gets the scroll amount of the object's scrollbar
 			buttons
 --]]---------------------------------------------------------
-function newobject:GetButtonScrollAmount()
+function newobject:getButtonScrollAmount()
 
 	return self.buttonscrollamount
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetMouseWheelScrollAmount(amount)
+	- func: setMouseWheelScrollAmount(amount)
 	- desc: sets the scroll amount of the mouse wheel
 --]]---------------------------------------------------------
-function newobject:SetMouseWheelScrollAmount(amount)
+function newobject:setMouseWheelScrollAmount(amount)
 
 	self.mousewheelscrollamount = amount
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetMouseWheelScrollAmount()
+	- func: getMouseWheelScrollAmount()
 	- desc: gets the scroll amount of the mouse wheel
 --]]---------------------------------------------------------
-function newobject:GetButtonScrollAmount()
+function newobject:getButtonScrollAmount()
 
 	return self.mousewheelscrollamount
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetDTScrolling(bool)
+	- func: setDTScrolling(bool)
 	- desc: sets whether or not the object should use delta
 			time when scrolling
 --]]---------------------------------------------------------
-function newobject:SetDTScrolling(bool)
+function newobject:setDTScrolling(bool)
 
 	self.dtscrolling = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetDTScrolling()
+	- func: getDTScrolling()
 	- desc: gets whether or not the object should use delta
 			time when scrolling
 --]]---------------------------------------------------------
-function newobject:GetDTScrolling()
+function newobject:getDTScrolling()
 
 	return self.dtscrolling
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: Sort(func)
+	- func: sort(func)
 	- desc: sorts the object's choices
 --]]---------------------------------------------------------
-function newobject:Sort(func)
+function newobject:sort(func)
 
 	local default = self.sortfunc
-	
+
 	if func then
 		table.sort(self.choices, func)
 	else
 		table.sort(self.choices, default)
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetSortFunction(func)
+	- func: setSortFunction(func)
 	- desc: sets the object's default sort function
 --]]---------------------------------------------------------
-function newobject:SetSortFunction(func)
+function newobject:setSortFunction(func)
 
 	self.sortfunc = func
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetSortFunction(func)
+	- func: getSortFunction(func)
 	- desc: gets the object's default sort function
 --]]---------------------------------------------------------
-function newobject:GetSortFunction()
+function newobject:getSortFunction()
 
 	return self.sortfunc
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: Clear()
+	- func: clear()
 	- desc: removes all choices from the object's list
 			of choices
 --]]---------------------------------------------------------
-function newobject:Clear()
+function newobject:clear()
 
 	self.choices = {}
 	self.choice = ""
 	self.text = "Select an option"
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: SetClickable(bool)
+	- func: setClickable(bool)
 	- desc: sets whether or not the object is enabled
 --]]---------------------------------------------------------
-function newobject:SetEnabled(bool)
+function newobject:setEnabled(bool)
 
 	self.enabled = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
-	- func: GetEnabled()
+	- func: getEnabled()
 	- desc: gets whether or not the object is enabled
 --]]---------------------------------------------------------
-function newobject:GetEnabled()
+function newobject:getEnabled()
 
 	return self.enabled
-	
+
 end
 
 ---------- module end ----------

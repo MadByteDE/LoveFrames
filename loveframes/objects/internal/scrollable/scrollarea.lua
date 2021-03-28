@@ -7,7 +7,7 @@ return function(loveframes)
 ---------- module start ----------
 
 -- scrollarea class
-local newobject = loveframes.NewObject("scrollarea", "loveframes_object_scrollarea", true)
+local newobject = loveframes.newObject("scrollarea", "loveframes_object_scrollarea", true)
 
 --[[---------------------------------------------------------
 	- func: initialize()
@@ -29,15 +29,15 @@ function newobject:initialize(parent, bartype)
 	table.insert(self.internals, loveframes.objects["scrollbar"]:new(self, bartype))
 	
 	-- apply template properties to the object
-	loveframes.ApplyTemplatesToObject(self)
-	self:SetDrawFunc()
+	loveframes.applyTemplatesToObject(self)
+	self:setDrawFunc()
 end
 
 --[[---------------------------------------------------------
 	- func: update(deltatime)
 	- desc: updates the object
 --]]---------------------------------------------------------
-function newobject:update(dt)
+function newobject:_update(dt)
 	
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
@@ -48,7 +48,7 @@ function newobject:update(dt)
 		end
 	end
 	
-	self:CheckHover()
+	self:checkHover()
 	
 	local base = loveframes.base
 	local parent = self.parent
@@ -64,7 +64,7 @@ function newobject:update(dt)
 	local internals = self.internals
 	local bar = internals[1]
 	local hover = self.hover
-	local update = self.Update
+	local update = self.update
 	
 	if button then
 		if bartype == "vertical" then
@@ -91,15 +91,15 @@ function newobject:update(dt)
 			self.scrolldelay = time + delayamount
 			if self.bartype == "vertical" then
 				if y > bar.y then
-					bar:Scroll(bar.height)
+					bar:scroll(bar.height)
 				else
-					bar:Scroll(-bar.height)
+					bar:scroll(-bar.height)
 				end
 			elseif self.bartype == "horizontal" then
 				if x > bar.x then
-					bar:Scroll(bar.width)
+					bar:scroll(bar.width)
 				else
-					bar:Scroll(-bar.width)
+					bar:scroll(-bar.width)
 				end
 			end
 		end
@@ -109,7 +109,7 @@ function newobject:update(dt)
 	end
 	
 	for k, v in ipairs(internals) do
-		v:update(dt)
+		v:_update(dt)
 	end
 	
 	if update then
@@ -140,21 +140,21 @@ function newobject:mousepressed(x, y, button)
 	if hover and button == 1 then
 		self.down = true
 		self.scrolldelay = time + delayamount + 0.5
-		local baseparent = self:GetBaseParent()
+		local baseparent = self:getBaseParent()
 		if baseparent and baseparent.type == "frame" then
-			baseparent:MakeTop()
+			baseparent:makeTop()
 		end
 		if self.bartype == "vertical" then
 			if y > self.internals[1].y then
-				bar:Scroll(bar.height)
+				bar:scroll(bar.height)
 			else
-				bar:Scroll(-bar.height)
+				bar:scroll(-bar.height)
 			end
 		elseif self.bartype == "horizontal" then
 			if x > bar.x then
-				bar:Scroll(bar.width)
+				bar:scroll(bar.width)
 			else
-				bar:Scroll(-bar.width)
+				bar:scroll(-bar.width)
 			end
 		end
 		loveframes.downobject = self
@@ -191,10 +191,10 @@ function newobject:mousereleased(x, y, button)
 end
 
 --[[---------------------------------------------------------
-	- func: GetBarType()
+	- func: getBarType()
 	- desc: gets the object's bar type
 --]]---------------------------------------------------------
-function newobject:GetBarType()
+function newobject:getBarType()
 	
 	return self.bartype
 	
